@@ -33,7 +33,7 @@
     </style>
 </head>
 <body>
-    <?php include 'partials/header.php'; ?>
+    <?php include 'header.php'; ?>
 
     <div class="container">
         <?php

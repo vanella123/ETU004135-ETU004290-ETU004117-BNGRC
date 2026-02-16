@@ -6,10 +6,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="/saisieBesoin">Saisie Besoin</a></li>
                 <li class="nav-item"><a class="nav-link" href="/form_dons">Saisie Don</a></li>
-                <li class="nav-item"><a class="nav-link" href="/besoins">Besoins Totaux</a></li>
+                <li class="nav-item"><a class="nav-link" href="/recap">Besoins Totaux</a></li>
                 <li class="nav-item"><a class="nav-link" href="/achats">Achats</a></li>
             </ul>
         </div>

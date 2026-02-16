@@ -24,19 +24,33 @@ Flight::route('GET /saisieBesoin', function () {
     $feedback = $_SESSION['besoin_feedback'] ?? null;
     unset($_SESSION['besoin_feedback']);
 
-    Flight::render('SaisieBesoin', [
+    // Page spécifique
+    $content = 'SaisieBesoin.php';
+    
+    Flight::render('model.php', [
         'villes'   => $villeController->getAllVilles(),
         'produits' => $articleController->getAllArticles(),
         'feedback' => $feedback,
+        'content'  => $content,
+        'title'    => 'Saisie Besoin'
     ]);
 });
+
 
 Flight::route('GET /', function () {
     $controller = new DashbordController();
     $bord = $controller->getbord();
     $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
-    Flight::render('dashbord', ['dashboard' => $data]);
+
+    $content = 'dashbord.php';
+
+    Flight::render('model.php', [
+        'dashboard' => $data,
+        'content'   => $content,
+        'title'     => 'Tableau de Bord'
+    ]);
 });
+
 
 // Simulation du dispatch (affichage dans le dashboard)
 Flight::route('POST /simulate', function(){
@@ -67,12 +81,11 @@ Flight::route('POST /dispatch', function(){
 Flight::route('GET|POST /form_dons', function() {
 
     $db = Flight::db();
-    $donController = new \app\controllers\DonController();
-    $articleController = new \app\controllers\ArticleController($db);
+    $donController = new DonController();
+    $articleController = new ArticleController($db);
 
     $message = null;
 
-    // Traitement du formulaire
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $donateur = trim($_POST['donateur'] ?? '');
         $article_id = $_POST['article_id'] ?? null;
@@ -80,37 +93,19 @@ Flight::route('GET|POST /form_dons', function() {
         $date_saisie = $_POST['date_saisie'] ?? null;
 
         if (!$donateur || !$article_id || !$quantite || !$date_saisie) {
-            $message = [
-                'type' => 'danger',
-                'text' => 'Tous les champs sont obligatoires.'
-            ];
+            $message = ['type' => 'danger', 'text' => 'Tous les champs sont obligatoires.'];
         } else {
             $result = $donController->addDon($article_id, $quantite, $donateur, $date_saisie);
-            if ($result) {
-                $message = [
-                    'type' => 'success',
-                    'text' => 'Don ajouté avec succès !'
-                ];
-            } else {
-                $message = [
-                    'type' => 'danger',
-                    'text' => 'Erreur lors de l\'ajout du don.'
-                ];
-            }
+            $message = $result ? ['type'=>'success','text'=>'Don ajouté avec succès !'] : ['type'=>'danger','text'=>'Erreur lors de l\'ajout du don.'];
         }
     }
 
-    // Récupération des articles pour le dropdown
     $articles = $articleController->getAllArticles();
-
-    // Récupération des dons pour le tableau
     $dons = $donController->getAllDon();
 
-    Flight::render('form_dons', [
-        'articles' => $articles,
-        'dons' => $dons,
-        'message' => $message
-    ]);
+    $content = 'form_dons.php';
+
+    Flight::render('model.php', compact('articles','dons','message','content') + ['title' => 'Saisie Don']);
 });
 
 Flight::route('POST /saisie', function () {
@@ -145,7 +140,6 @@ Flight::route('GET|POST /achats', function(){
 
     $message = null;
 
-    // Traitement formulaire
     if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $ville_id = $_POST['ville_id'] ?? null;
         $article_id = $_POST['article_id'] ?? null;
@@ -156,7 +150,14 @@ Flight::route('GET|POST /achats', function(){
         if(!$ville_id || !$article_id || !$quantite){
             $message = ['type'=>'danger','text'=>'Tous les champs sont obligatoires'];
         } else {
-            $res = $achatController->addAchat($article_id, $ville_id, $quantite, $articleController->getArticleById($article_id)['prix_unitaire'], $frais, $date);
+            $res = $achatController->addAchat(
+                $article_id,
+                $ville_id,
+                $quantite,
+                $articleController->getArticleById($article_id)['prix_unitaire'],
+                $frais,
+                $date
+            );
             $message = $res['success'] ? ['type'=>'success','text'=>$res['message']] : ['type'=>'danger','text'=>$res['message']];
         }
     }
@@ -167,6 +168,7 @@ Flight::route('GET|POST /achats', function(){
     $ville_filter = $_GET['ville_filter'] ?? null;
     $achats = $achatController->getAchats($ville_filter);
 
-    Flight::render('achats', compact('articles','villes','achats','message'));
-});
+    $content = 'achats.php';
 
+    Flight::render('model.php', compact('articles','villes','achats','message','content') + ['title'=>'Achats']);
+});
