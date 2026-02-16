@@ -1,0 +1,32 @@
+# Dépendances
+/vendor/
+
+# Config sensible
+app/config/config.php
+
+# Logs
+app/log/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Uploads utilisateur
+public/uploads/
+
+# Cache
+app/cache/
+
+# Fichiers temporaires / brouillons
+salut.txt
+miranto.txy
+index-simple.php
+
