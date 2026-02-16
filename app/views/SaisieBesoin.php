@@ -6,7 +6,7 @@
 </head>
 <body>
     <h2>Enregistrer un besoin pour une ville</h2>
-    <form action="/saisieBesoin" method="POST">
+    <form action="<?php echo BASE_URL ?>/saisieBesoin" method="POST">
         <!-- Ville -->
         <label for="ville">Ville :</label>
         <select id="ville" name="ville" required>

@@ -18,7 +18,7 @@ session_start();
 Flight::route('/saisieBesoin', function() {
     // On récupère toutes les villes
     $controllerVille = new VilleController();
-    $villes =$controllerVille->getAllVille(); // retourne un tableau ex: [['id'=>1,'nom'=>'Antananarivo'],...]
+    $villes =$controllerVille->getAllVilles(); // retourne un tableau ex: [['id'=>1,'nom'=>'Antananarivo'],...]
 
     // TODO: Adapter pour utiliser les nouveaux contrôleurs (Besoin/Don au lieu de Produit)
     Flight::render('SaisieBesoin', ['villes' => $villes]);
