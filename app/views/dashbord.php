@@ -84,9 +84,9 @@
 <h1>Tableau de Bord : Besoins et Dons par Ville</h1>
 
 <div class="top-bar">
-    <form method="POST" action="dispatch">
-        <button type="submit" class="btn-dispatch" onclick="return confirm('Lancer le dispatch de tous les dons non distribues ?')">
-            Dispatcher les dons
+    <form method="GET" action="simulation">
+        <button type="submit" class="btn-dispatch">
+            🚀 Simuler le Dispatch
         </button>
     </form>
 </div>

@@ -35,6 +35,56 @@ class DispatchModel {
     }
 
     /**
+     * SIMULE le dispatch de tous les dons sans exécuter les INSERT en base.
+     * Retourne un aperçu de ce qui serait fait.
+     */
+    public function simulerDispatch(){
+
+        $donsNonRepartis = $this->getDonsAvecReste();
+        $simulation = [];
+
+        foreach ($donsNonRepartis as $don) {
+            $repartitions = $this->simulerDispatchDon($don);
+            if (!empty($repartitions)) {
+                $simulation[] = [
+                    'don_id' => $don['id'],
+                    'article_id' => $don['article_id'],
+                    'reste' => $don['reste'],
+                    'repartitions' => $repartitions
+                ];
+            }
+        }
+
+        return $simulation;
+    }
+
+    /**
+     * Simule le dispatch d'un don spécifique sans INSERT.
+     */
+    private function simulerDispatchDon($don){
+        
+        $resteDon = $don['reste'];
+        $besoins = $this->getBesoinsNonSatisfaits($don['article_id']);
+        $repartitions = [];
+
+        foreach ($besoins as $besoin) {
+            if ($resteDon <= 0) break;
+
+            $quantiteARepartir = min($resteDon, $besoin['reste']);
+
+            $repartitions[] = [
+                'besoin_id' => $besoin['id'],
+                'ville' => $besoin['ville'] ?? 'N/A',
+                'quantite' => $quantiteARepartir
+            ];
+
+            $resteDon -= $quantiteARepartir;
+        }
+
+        return $repartitions;
+    }
+
+    /**
      * Récupère tous les dons qui ont encore de la quantité non distribuée,
      * triés par date de saisie (les plus anciens d'abord).
      */
@@ -129,10 +179,11 @@ class DispatchModel {
     private function getBesoinsNonSatisfaits($article_id){
 
         $sql = "
-            SELECT b.*,
+            SELECT b.*, v.nom as ville,
             (b.quantite - IFNULL(SUM(r.quantite_repartie),0)) AS reste
             FROM besoin b
             LEFT JOIN repartition_don r ON b.id = r.besoin_id
+            LEFT JOIN ville v ON b.ville_id = v.id
             WHERE b.article_id = ?
             GROUP BY b.id
             HAVING reste > 0

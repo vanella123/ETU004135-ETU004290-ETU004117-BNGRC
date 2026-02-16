@@ -62,4 +62,31 @@ class DispatchController {
             ];
         }
     }
+
+    /**
+     * Simuler le dispatch sans l'exécuter réellement
+     */
+    public function simuler(){
+
+        $db = Flight::db();
+        $dispatch = new DispatchModel($db);
+
+        try {
+
+            $simulation = $dispatch->simulerDispatch();
+
+            return [
+                "success" => true,
+                "message" => "Simulation effectuée avec succès",
+                "simulation" => $simulation
+            ];
+
+        } catch (Throwable $e) {
+
+            return [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+    }
 }

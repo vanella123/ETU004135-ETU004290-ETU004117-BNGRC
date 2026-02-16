@@ -39,6 +39,24 @@ Flight::route('/', function () {
 
 });
 
+// Page de simulation du dispatch
+Flight::route('GET /simulation', function(){
+    Flight::render('simulation');
+});
+
+// Simulation sans exécution
+Flight::route('POST /simulation/preview', function(){
+    $controller = new DispatchController();
+    $result = $controller->simuler();
+    
+    $data = [];
+    if ($result['success']) {
+        $data['simulation'] = $result['simulation'];
+    }
+    
+    Flight::render('simulation', $data);
+});
+
 // Bouton Dispatch : lance le dispatch global puis redirige vers le dashboard
 Flight::route('POST /dispatch', function(){
     $controller = new DispatchController();
