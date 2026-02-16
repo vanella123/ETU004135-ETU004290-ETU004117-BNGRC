@@ -3,9 +3,12 @@ namespace app\config;
 use flight\Engine;
 use app\controllers\BesoinController;
 use app\controllers\DonController;
-use app\controllers\DispatchController;
-use app\controllers\VilleController;
-use app\controllers\DashbordController;
+    use app\controllers\DispatchController;
+    use app\controllers\ProduitController;
+    use app\controllers\VilleController;
+    use app\controllers\DashbordController;
+    use app\controllers\ArticleController;
+use app\controllers\ArticleController;
 
 use flight\net\Router;
 use Flight; 
@@ -15,22 +18,20 @@ use Flight;
  */
 session_start();
 // Route pour afficher le formulaire de saisie
-Flight::route('/saisieBesoin', function() {
-    // On récupère toutes les villes
-    $controllerVille = new VilleController();
-    $villes =$controllerVille->getAllVilles(); // retourne un tableau ex: [['id'=>1,'nom'=>'Antananarivo'],...]
+Flight::route('/saisieBesoin', function () {
+    $villeController = new VilleController();
+    $produitController = new ProduitController();
 
-    // TODO: Adapter pour utiliser les nouveaux contrôleurs (Besoin/Don au lieu de Produit)
-    Flight::render('SaisieBesoin', ['villes' => $villes]);
+    Flight::render('SaisieBesoin', [
+        'villes'   => $villeController->getAllVilles(),
+        'produits' => $produitController->getAllProduits(),
+    ]);
 });
 
-Flight::route('/', function(){
-
+Flight::route('/',function(){
     $controller = new DashbordController();
-    $bord = $controller->getbord() ;
+    $bord = $controller->getbord();
     Flight::render('dashbord', ['dashboard' => $bord]);
-    
-
 });
 
 
