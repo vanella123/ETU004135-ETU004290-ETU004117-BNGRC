@@ -6,9 +6,9 @@ use app\models\DashboardModel;
 use Flight;
 use Throwable;
 
-class DashboardController {
+class DashbordController {
 
-    public function index(){
+    public function getbord(){
 
         $db = Flight::db();
         $dashboard = new DashboardModel($db);
@@ -54,9 +54,9 @@ class DashboardController {
     public function viewDashboard(){
 
     $db = Flight::db();
-    $dashboardModel = new DashboardModel($db);
+    $DashboardModel = new DashboardModel($db);
 
-    $data = $dashboardModel->getDashboardData();
+    $data = $DashboardModel->getDashboardData();
 
     // Envoie les données à la vue
     Flight::render('dashboard', [
