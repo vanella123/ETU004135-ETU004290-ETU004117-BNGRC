@@ -128,5 +128,12 @@ Flight::route('POST /saisie', function () {
     // 🔥 TRÈS IMPORTANT : redirection
     Flight::redirect('/saisieBesoin');
 });
+Flight::route('GET /resumeBesoinsAjax', function () {
+    $controller = new BesoinController();
+    $result = $controller->getRecapBesoin();
+
+    Flight::render('recap_besoin', ['data' => $result]);
+}); 
+
 
 
