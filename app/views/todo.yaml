@@ -9,3 +9,27 @@
 Route : /saiseBesoin 
     - getAllVille 
     - getAllProduit
+
+========== recapitulation des besoins ============
+Version 2 : 
+✅ 
+
+Troisieme question : 
+- creation de view pour afficher besoins totaux , satistfaits en montant , montant des besoins restant à satisfaire
+- besoins totaux : on somme - quantite * prix unitaire
+- tous ce qui ont statut "statifait : on somme - quantite * prix unitaire
+- besoins restant à satisfaire : on somme - quantite * prix unitaire pour les besoins qui n'ont pas le statut "satisfait"
+
+Page : 
+Recapitulation des besoins : 
+| Ville | Besoin Total | Besoin Satisfait | Besoin Restant |
+|------|--------------|------------------|-----------------|
+| Paris | 1000€        | 600€             | 400€            |
+| Lyon  | 800€         | 500€             | 300€            |
+| Marseille | 1200€      | 900€             | 300€            | 
+Total : 3000€       | 2000€            | 1000€           |
+
+Bouton actualiser en ajax 
+
+
+Route : 
