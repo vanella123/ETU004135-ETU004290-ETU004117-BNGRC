@@ -4,8 +4,8 @@ use flight\Engine;
 use app\controllers\BesoinController;
 use app\controllers\DonController;
 use app\controllers\DispatchController;
-use app\controllers\VilleController;
 use app\controllers\ArticleController;
+use app\controllers\VilleController;
 use app\controllers\DashbordController;
 
 use flight\net\Router;
@@ -15,22 +15,36 @@ use Flight;
  * @var Engine $app 
  */
 session_start();
-// Route pour afficher le formulaire de saisie
-Flight::route('/saisieBesoin', function () {
+
+Flight::route('GET /saisieBesoin', function () {
     $db = Flight::db();
-    $villeController = new VilleController($db);
-    $produitController = new ArticleController($db);
+    $villeController = new VilleController();
+    $articleController = new ArticleController($db);
+
+    $feedback = $_SESSION['besoin_feedback'] ?? null;
+    unset($_SESSION['besoin_feedback']);
 
     Flight::render('SaisieBesoin', [
         'villes'   => $villeController->getAllVilles(),
-        'produits' => $produitController->getAllArticles(),
+        'produits' => $articleController->getAllArticles(),
+        'feedback' => $feedback,
     ]);
 });
 
-Flight::route('/', function(){
+Flight::route('POST /saisieBesoin', function () {
+    $controller = new BesoinController();
+    $result = $controller->addBesoin();
 
+    $_SESSION['besoin_feedback'] = $result;
+
+    $baseUrl = Flight::get('flight.base_url');
+    Flight::redirect($baseUrl . '/saisieBesoin');
+});
+
+Flight::route('/', function () {
     $controller = new DashbordController();
     $bord = $controller->getbord();
+<<<<<<< HEAD
     $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
     Flight::render('dashbord', ['dashboard' => $data]);
 
@@ -41,6 +55,9 @@ Flight::route('POST /dispatch', function(){
     $controller = new DispatchController();
     $controller->dispatchAll();
     Flight::redirect('/');
+=======
+    Flight::render('dashbord', ['dashboard' => $bord]);
+>>>>>>> 09cf478770258820e98e4dc76bd8666d7dfca5ef
 });
 
 
@@ -94,4 +111,9 @@ Flight::route('GET|POST /form_dons', function() {
     ]);
 });
 
+Flight::route('POST /saisie', function () {
+    $controller = new BesoinController();
+    $result = $controller->addBesoin();
+    Flight::json($result);
+});
 
