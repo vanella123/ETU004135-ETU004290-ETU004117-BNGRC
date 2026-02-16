@@ -31,30 +31,28 @@ Flight::route('GET /saisieBesoin', function () {
     ]);
 });
 
-Flight::route('/', function () {
+Flight::route('GET /', function () {
     $controller = new DashbordController();
     $bord = $controller->getbord();
     $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
     Flight::render('dashbord', ['dashboard' => $data]);
-
 });
 
-// Page de simulation du dispatch
-Flight::route('GET /simulation', function(){
-    Flight::render('simulation');
-});
-
-// Simulation sans exécution
-Flight::route('POST /simulation/preview', function(){
-    $controller = new DispatchController();
-    $result = $controller->simuler();
+// Simulation du dispatch (affichage dans le dashboard)
+Flight::route('POST /simulate', function(){
+    $controller = new DashbordController();
+    $bord = $controller->getbord();
+    $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
     
-    $data = [];
-    if ($result['success']) {
-        $data['simulation'] = $result['simulation'];
-    }
+    // Ajouter la simulation
+    $dispatchController = new DispatchController();
+    $simulationResult = $dispatchController->simuler();
     
-    Flight::render('simulation', $data);
+    Flight::render('dashbord', [
+        'dashboard' => $data,
+        'simulation' => $simulationResult['success'] ? $simulationResult['simulation'] : null,
+        'showSimulation' => true
+    ]);
 });
 
 // Bouton Dispatch : lance le dispatch global puis redirige vers le dashboard

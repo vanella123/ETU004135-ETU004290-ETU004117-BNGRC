@@ -36,26 +36,50 @@ class DispatchModel {
 
     /**
      * SIMULE le dispatch de tous les dons sans exécuter les INSERT en base.
-     * Retourne un aperçu de ce qui serait fait.
+     * Retourne un aperçu complet : tous les besoins + répartitions simulées.
      */
     public function simulerDispatch(){
 
+        // 1) Récupérer tous les besoins actuels
+        $tousLesBesoins = $this->getTousLesBesoins();
+        
+        // 2) Simuler les répartitions
         $donsNonRepartis = $this->getDonsAvecReste();
-        $simulation = [];
-
+        $repartitionsSimulees = [];
+        
         foreach ($donsNonRepartis as $don) {
             $repartitions = $this->simulerDispatchDon($don);
             if (!empty($repartitions)) {
-                $simulation[] = [
-                    'don_id' => $don['id'],
-                    'article_id' => $don['article_id'],
-                    'reste' => $don['reste'],
-                    'repartitions' => $repartitions
-                ];
+                foreach ($repartitions as $rep) {
+                    $repartitionsSimulees[] = [
+                        'don_id' => $don['id'],
+                        'besoin_id' => $rep['besoin_id'],
+                        'quantite' => $rep['quantite'],
+                        'ville' => $rep['ville']
+                    ];
+                }
             }
         }
-
-        return $simulation;
+        
+        // 3) Calculer l'état final pour chaque besoin
+        foreach ($tousLesBesoins as &$besoin) {
+            // Quantité qui sera ajoutée par la simulation
+            $ajoutSimule = 0;
+            foreach ($repartitionsSimulees as $rep) {
+                if ($rep['besoin_id'] == $besoin['id']) {
+                    $ajoutSimule += $rep['quantite'];
+                }
+            }
+            
+            $besoin['ajout_simule'] = $ajoutSimule;
+            $besoin['nouveau_attribue'] = $besoin['quantite_attribuee'] + $ajoutSimule;
+            $besoin['nouveau_reste'] = max(0, $besoin['quantite_restante'] - $ajoutSimule);
+        }
+        
+        return [
+            'besoins' => $tousLesBesoins,
+            'repartitions_simulees' => $repartitionsSimulees
+        ];
     }
 
     /**
@@ -100,6 +124,32 @@ class DispatchModel {
             ORDER BY d.date_saisie ASC
         ";
 
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupère TOUS les besoins avec leur état actuel (satisfait ou non)
+     */
+    private function getTousLesBesoins(){
+        
+        $sql = "
+            SELECT 
+                b.id,
+                b.quantite AS quantite_demandee,
+                v.nom AS ville,
+                a.nom AS article,
+                IFNULL(SUM(r.quantite_repartie), 0) AS quantite_attribuee,
+                (b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS quantite_restante,
+                s.libelle AS statut_actuel
+            FROM besoin b
+            JOIN ville v ON b.ville_id = v.id
+            JOIN article a ON b.article_id = a.id
+            LEFT JOIN statut s ON b.statut_id = s.id_statut
+            LEFT JOIN repartition_don r ON b.id = r.besoin_id
+            GROUP BY b.id
+            ORDER BY v.nom ASC, a.nom ASC, b.id ASC
+        ";
+        
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
