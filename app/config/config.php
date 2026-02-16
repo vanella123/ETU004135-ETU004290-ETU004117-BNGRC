@@ -45,11 +45,11 @@ $ds = DIRECTORY_SEPARATOR; // Séparateur de dossier compatible Windows/Linux
 // You'll need to namespace your classes with "app\folder\" to include them properly
 $app->path(__DIR__ . $ds . '..' . $ds . '..');
 if (!defined('BASE_URL')) {
-    define('BASE_URL', '/ETU004135-ETU004290-ETU004117-BNGRC'); // ou '/monapp' si sous-dossier
+    define('BASE_URL', ''); // vide car on utilise php -S localhost:8000 -t public
 }
 
 // Core config variables
-$app->set('flight.base_url', '/ETU004135-ETU004290-ETU004117-BNGRC',);           // Base URL for your app. Change if app is in a subdirectory (e.g., '/myapp/')
+$app->set('flight.base_url', '');           // vide pour localhost:8000, mettre '/ETU004135-ETU004290-ETU004117-BNGRC' si Apache/XAMPP
 $app->set('flight.case_sensitive', false);    // Set true for case sensitive routes. Default: false
 $app->set('flight.log_errors', true);         // Log errors to file. Recommended: true in production
 $app->set('flight.handle_errors', false);     // Let Tracy handle errors if false. Set true to use Flight's error handler

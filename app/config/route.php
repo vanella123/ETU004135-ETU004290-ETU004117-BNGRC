@@ -30,10 +30,17 @@ Flight::route('/saisieBesoin', function () {
 Flight::route('/', function(){
 
     $controller = new DashbordController();
-    $bord = $controller->getbord() ;
-    Flight::render('dashbord', ['dashboard' => $bord]);
-    
+    $bord = $controller->getbord();
+    $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
+    Flight::render('dashbord', ['dashboard' => $data]);
 
+});
+
+// Bouton Dispatch : lance le dispatch global puis redirige vers le dashboard
+Flight::route('POST /dispatch', function(){
+    $controller = new DispatchController();
+    $controller->dispatchAll();
+    Flight::redirect('/');
 });
 
 
