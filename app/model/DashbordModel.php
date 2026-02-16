@@ -52,4 +52,11 @@ class DashboardModel {
 
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getDashboardDatas(){
+
+        $sql = "SELECT * FROM vue_dashboard ORDER BY ville ASC, article ASC";
+
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

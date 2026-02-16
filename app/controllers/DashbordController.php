@@ -50,4 +50,17 @@ class DashboardController {
             ];
         }
     }
+
+    public function viewDashboard(){
+
+    $db = Flight::db();
+    $dashboardModel = new DashboardModel($db);
+
+    $data = $dashboardModel->getDashboardData();
+
+    // Envoie les données à la vue
+    Flight::render('dashboard', [
+        'dashboard' => $data
+    ]);
+}
 }
