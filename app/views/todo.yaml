@@ -32,4 +32,17 @@ Total : 3000€       | 2000€            | 1000€           |
 Bouton actualiser en ajax 
 
 
-Route : 
+
+======= model.php =======
+
+creation d'un model php avec footer et header de theme bleu avec nuance 
+comme les template je veux que ce soit moderne 
+
+et on integre une page dans une model mais pas le contraire 
+
+- les fonctionnalites jusqu'ici : 
+    tableau de bord pour faire la distribution des dons pour les besoins
+    formulaire de saisie de besoin
+    formualire de saisie de don
+    tableau pour voir les besoins totaux , satisfait et restant
+    achat de produit pour les besoins a partir des dons en argent 
