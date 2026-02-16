@@ -1,0 +1,18 @@
+-  ze url a ao anaty router iany no azo sokafana (makany am controlleur)
+-  Manapotra vue : - controlleur miresaka am model ensuite miresaka am dao aveo iny no miresaka 
+                   - base de donnee 
+                   - mapiditra sary : - anaty routage 
+            Tsy mila xampp , lancer manome localhost . 
+            Projet crud : - theme : crud mapiditra sary , misy upload 
+
+Page d'accuiel : listeProduit 
+        - Base : 
+        - Model : 
+            - creer modele : Produit 
+        - Fonction : 
+            - getAllProduit 
+
+
+                quand on clique sur un porduit alors on voit ces details 
+                manao route de controlleur , model
+                atao ao anaty public le asset (pour image ) 

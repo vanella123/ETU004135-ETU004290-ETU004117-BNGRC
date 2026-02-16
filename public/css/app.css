@@ -1,0 +1,423 @@
+/* =========================================================
+   DELIVERY UI — "Landing Template" style (blue + amber)
+   Objectif: rendu template premium, très propre, ombres pro
+   Compatible avec vos classes actuelles:
+   .topbar .topbar-inner .brand .brand-badge .nav .container
+   .hero .actions .btn .btn-primary .btn-success .table-wrap etc.
+   ========================================================= */
+
+/* -------------------- TOKENS -------------------- */
+:root{
+  --bg: #f6f8ff;              /* fond très clair (bleu/gris) */
+  --bg-2:#ffffff;
+  --surface: #ffffff;
+  --surface-2:#f9fbff;
+  --border: rgba(15, 23, 42, .10);
+  --border-2: rgba(15, 23, 42, .06);
+
+  --text: #0f172a;
+  --muted: rgba(15, 23, 42, .62);
+
+  --primary: #2563eb;         /* bleu (style Lenda) */
+  --primary-2:#1d4ed8;
+  --accent: #f59e0b;          /* jaune (style construction) */
+  --accent-2:#d97706;
+
+  --success:#16a34a;
+  --danger:#ef4444;
+  --pending:#0ea5e9;
+
+  --r-xl: 26px;
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 12px;
+
+  /* Ombres premium (multi-couches) */
+  --shadow-xs: 0 1px 2px rgba(2, 6, 23, .05);
+  --shadow-sm: 0 6px 18px rgba(2, 6, 23, .08);
+  --shadow-md: 0 14px 36px rgba(2, 6, 23, .10);
+  --shadow-lg: 0 24px 70px rgba(2, 6, 23, .14);
+
+  --ring: 0 0 0 5px rgba(37, 99, 235, .14);
+
+  --container: 1120px;
+}
+
+/* -------------------- BASE -------------------- */
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  color: var(--text);
+  line-height: 1.55;
+  background:
+    radial-gradient(800px 420px at 10% 8%, rgba(37,99,235,.16), transparent 60%),
+    radial-gradient(760px 420px at 92% 12%, rgba(245,158,11,.16), transparent 58%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+  overflow-x: hidden;
+}
+
+a{ color: var(--primary); text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+h1,h2,h3{ margin: 0 0 10px; letter-spacing: .2px; }
+p{ margin: 0 0 12px; color: var(--muted); }
+
+/* -------------------- CONTAINER -------------------- */
+.container{
+  max-width: var(--container);
+  margin: 26px auto 40px;
+  padding: 0 18px;
+}
+
+/* -------------------- TOPBAR (template-like) -------------------- */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  background: rgba(78, 107, 201, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border-bottom: 1px solid var(--border-2);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, .06);
+}
+
+.topbar-inner{
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  color: var(--text);
+}
+
+.brand-badge{
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, .10);
+  background:
+    radial-gradient(18px 18px at 30% 30%, rgba(221, 46, 46, 0.85), transparent 60%),
+    linear-gradient(135deg, rgba(37,99,235,.92), rgba(14,165,233,.78));
+  box-shadow: var(--shadow-sm);
+}
+
+/* Nav links comme templates */
+.nav{
+  display:flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nav a{
+  position: relative;
+  color: rgba(15,23,42,.78);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: .2px;
+
+  padding: 10px 8px;
+  border-radius: 10px;
+  transition: color .14s ease, background .14s ease, transform .12s ease;
+}
+
+/* underline moderne */
+.nav a::after{
+  content:"";
+  position:absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 6px;
+  height: 2px;
+  border-radius: 999px;
+  background: transparent;
+  transition: background .14s ease;
+}
+
+.nav a:hover{
+  background: rgba(37,99,235,.08);
+  transform: translateY(-1px);
+  color: rgba(15,23,42,.92);
+}
+.nav a:hover::after{ background: rgba(37,99,235,.45); }
+
+/* Option: ajoutez class="is-active" sur le lien de la page */
+.nav a.is-active{
+  color: rgba(15,23,42,.96);
+  background: rgba(245,158,11,.12);
+}
+.nav a.is-active::after{ background: rgba(245,158,11,.70); }
+
+/* -------------------- HERO (comme landing) -------------------- */
+.hero{
+  position: relative;
+  padding: 28px 26px;
+  border-radius: var(--r-xl);
+  background: rgba(22, 95, 190, 0.9);
+  border: 1px solid rgba(15,23,42,.08);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* vague + shapes comme templates */
+.hero::before{
+  content:"";
+  position:absolute;
+  inset: -40px -80px auto -80px;
+  height: 220px;
+  background:
+    radial-gradient(220px 120px at 20% 40%, rgba(37,99,235,.22), transparent 60%),
+    radial-gradient(240px 140px at 70% 30%, rgba(245,158,11,.22), transparent 60%);
+  transform: skewY(-4deg);
+  opacity: .9;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  right: -140px;
+  top: -120px;
+  width: 320px;
+  height: 320px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(223, 116, 116, 0.8), transparent 45%),
+              linear-gradient(135deg, rgba(14,165,233,.22), rgba(37,99,235,.16));
+  filter: blur(0px);
+  opacity: .9;
+}
+
+.hero > *{ position: relative; z-index: 1; }
+
+.hero h1{
+  font-size: 40px;
+  font-weight: 950;
+  letter-spacing: .2px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.hero p{
+  max-width: 72ch;
+  color: rgba(15,23,42,.65);
+  margin-bottom: 16px;
+}
+
+.actions{
+  display:flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items:center;
+}
+
+/* -------------------- BUTTONS (vrai style template) -------------------- */
+.btn, button{
+  display: inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap: 10px;
+
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.10);
+
+  background: rgba(46, 58, 231, 0.96);
+  color: rgba(15,23,42,.90);
+
+  cursor: pointer;
+  user-select: none;
+  font-weight: 900;
+  letter-spacing: .2px;
+  text-decoration: none;
+
+  box-shadow: var(--shadow-sm);
+  transition: transform .12s ease, box-shadow .14s ease, filter .14s ease, border-color .14s ease;
+}
+
+.btn:hover, button:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(37,99,235,.25);
+}
+
+.btn:active, button:active{
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:focus-visible, button:focus-visible{
+  outline: none;
+  box-shadow: var(--ring), var(--shadow-md);
+}
+
+/* vos classes existantes */
+.btn-primary{
+  background: linear-gradient(135deg, rgba(37,99,235,.98), rgba(29,78,216,.98));
+  border-color: rgba(37,99,235,.55);
+  color: #0d6eaf;
+}
+
+.btn-success{
+  background: linear-gradient(135deg, rgba(14,165,233,.96), rgba(37,99,235,.92));
+  border-color: rgba(14,165,233,.55);
+  color: #5f5dd4;
+}
+
+/* ajoutez si vous voulez */
+.btn-accent{
+  background: linear-gradient(135deg, rgba(245,158,11,.98), rgba(217,119,6,.98));
+  border-color: rgba(245,158,11,.65);
+  color: #1f1300;
+}
+.btn-danger{
+  background: linear-gradient(135deg, rgba(239,68,68,.98), rgba(220,38,38,.98));
+  border-color: rgba(239,68,68,.60);
+  color: #2f2cfd;
+}
+.btn-outline{
+  background: rgba(17, 72, 175, 0.96);
+  border-color: rgba(37,99,235,.35);
+  color: var(--primary-2);
+}
+
+/* -------------------- FORMS (pro & clean) -------------------- */
+label{
+  display:block;
+  margin: 0 0 7px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .45px;
+  color: rgba(15,23,42,.65);
+  font-weight: 900;
+}
+
+input, select, textarea{
+  width: min(980px, 100%);
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,.10);
+  background: rgba(71, 128, 192, 0.96);
+  color: var(--text);
+  box-shadow: var(--shadow-xs);
+  outline: none;
+  transition: box-shadow .14s ease, border-color .14s ease, transform .14s ease, background .14s ease;
+}
+
+input:focus, select:focus, textarea:focus{
+  border-color: rgba(37,99,235,.45);
+  box-shadow: var(--ring), var(--shadow-sm);
+  background: #5030dd;
+  transform: translateY(-1px);
+}
+
+/* espace propre entre champs (sans changer trop votre HTML) */
+form > *{ margin-bottom: 14px; }
+form .btn, form button{ margin-top: 6px; }
+
+/* -------------------- TABLE (comme dashboard template) -------------------- */
+.table-wrap{
+  margin-top: 12px;
+  border: 1px solid rgba(15,23,42,.08);
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255,255,255,.95);
+  box-shadow: var(--shadow-md);
+}
+
+table{ width: 100%; border-collapse: collapse; }
+
+thead th{
+  text-align:left;
+  font-size: 12px;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  color: rgba(15,23,42,.62);
+  padding: 14px 14px;
+  background: linear-gradient(180deg, rgba(37,99,235,.10), rgba(255,255,255,.85));
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+tbody td{
+  padding: 14px 14px;
+  border-bottom: 1px solid rgba(15,23,42,.06);
+  vertical-align: middle;
+}
+
+tbody tr:hover{
+  background: rgba(37,99,235,.05);
+}
+
+/* -------------------- STATUT (pill colorée) -------------------- */
+/* Utilisation recommandée dans le <td> statut:
+   <span class="status status--delivered">LIVRÉ</span>
+   <span class="status status--canceled">ANNULÉ</span>
+   <span class="status status--pending">EN_ATTENTE</span>
+*/
+.status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 950;
+  font-size: 12px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  border: 1px solid rgba(15,23,42,.10);
+  box-shadow: var(--shadow-xs);
+  background: rgba(20, 43, 172, 0.9);
+}
+.status--delivered{
+  color: var(--success);
+  border-color: rgba(22,163,74,.28);
+  background: rgba(22,163,74,.10);
+}
+.status--canceled{
+  color: var(--danger);
+  border-color: rgba(239,68,68,.30);
+  background: rgba(239,68,68,.10);
+}
+.status--pending{
+  color: var(--pending);
+  border-color: rgba(14,165,233,.30);
+  background: rgba(14,165,233,.10);
+}
+
+/* -------------------- EMPTY / FOOTER -------------------- */
+.empty{
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px dashed rgba(15,23,42,.22);
+  background: rgba(42, 16, 189, 0.75);
+  box-shadow: var(--shadow-xs);
+  color: rgba(15,23,42,.70);
+  font-weight: 650;
+}
+
+.footer{
+  color: rgba(15,23,42,.55);
+  text-align:center;
+  padding: 22px 16px 34px;
+}
+
+/* -------------------- RESPONSIVE -------------------- */
+@media (max-width: 900px){
+  .hero h1{ font-size: 32px; }
+  input, select, textarea{ width: 100%; }
+}
+@media (max-width: 520px){
+  .actions .btn{ width: 100%; }
+}
