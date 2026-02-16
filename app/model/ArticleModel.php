@@ -14,7 +14,7 @@ class ArticleModel {
     // Obtenir tous les produits
     // ======================
     public function getAllProduits() {
-        $sql = "SELECT a.id, a.nom, a.prix_unitaire, tb.nom AS type_besoin
+        $sql = "SELECT a.id, a.nom, a.prix_unitaire, tb.libelle AS type_besoin
                 FROM article a
                 JOIN type_besoin tb ON a.type_besoin_id = tb.id
                 ORDER BY a.nom ASC";
@@ -28,6 +28,14 @@ class ArticleModel {
         $stmt = $this->db->prepare("SELECT * FROM article WHERE id = :id");
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Récupérer l'ID d'un article par son nom
+    public function getIdByNomArticle($nom) {
+        $stmt = $this->db->prepare("SELECT id FROM article WHERE nom = :nom");
+        $stmt->execute(['nom' => $nom]);
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $res ? $res['id'] : null;
     }
 
     // ======================

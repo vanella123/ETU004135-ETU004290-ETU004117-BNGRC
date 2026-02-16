@@ -1,7 +1,7 @@
 <?php
-namespace app\controller;
+namespace app\controllers;
 
-use app\model\ProduitModel;
+use app\model\ArticleModel;
 use PDO;
 
 class ArticleController {
@@ -19,6 +19,9 @@ class ArticleController {
     }
     public function getArticleById($id) {
         return $this->articleModel->getProduitById($id);
+    }
+    public function getIdByNomArticle($nom) {
+        return $this->articleModel->getIdByNomArticle($nom);
     }
     public function addArticle($nom, $type_besoin_id, $prix_unitaire) {
         return $this->articleModel->addProduit($nom, $type_besoin_id, $prix_unitaire);
