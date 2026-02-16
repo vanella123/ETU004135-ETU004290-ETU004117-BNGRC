@@ -5,6 +5,7 @@ use app\controllers\BesoinController;
 use app\controllers\DonController;
 use app\controllers\DispatchController;
 use app\controllers\VilleController;
+use app\controllers\DashbordController;
 
 use flight\net\Router;
 use Flight; 
@@ -22,4 +23,19 @@ Flight::route('/saisieBesoin', function() {
     // TODO: Adapter pour utiliser les nouveaux contrôleurs (Besoin/Don au lieu de Produit)
     Flight::render('SaisieBesoin', ['villes' => $villes]);
 });
+
+Flight::route('GET /dashboard', function(){
+
+    $controller = new DashboardController();
+    $controller->viewDashboard();
+
+});
+
+Flight::route('GET /dashboard/view', function(){
+
+    $controller = new DashboardController();
+    $controller->viewDashboard();
+
+});
+
 
