@@ -24,18 +24,15 @@ Flight::route('/saisieBesoin', function() {
     Flight::render('SaisieBesoin', ['villes' => $villes]);
 });
 
-Flight::route('GET /dashboard', function(){
+Flight::route('/', function(){
 
-    $controller = new DashboardController();
-    $controller->viewDashboard();
-
-});
-
-Flight::route('GET /dashboard/view', function(){
-
-    $controller = new DashboardController();
-    $controller->viewDashboard();
+    $controller = new DashbordController();
+    $bord = $controller->getbord() ;
+    Flight::render('dashbord', ['dashboard' => $bord]);
+    
 
 });
+
+
 
 

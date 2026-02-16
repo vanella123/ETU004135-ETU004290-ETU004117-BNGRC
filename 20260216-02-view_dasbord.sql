@@ -13,3 +13,5 @@ JOIN ville v ON b.ville_id = v.id
 JOIN article a ON b.article_id = a.id
 LEFT JOIN repartition_don r ON b.id = r.besoin_id
 GROUP BY b.id;
+
+
