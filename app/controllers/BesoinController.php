@@ -52,4 +52,9 @@ class BesoinController {
             ];
         }
     }
+    public function getRecapBesoin(){
+        $db = Flight::db();
+        $besoin = new BesoinModel($db);
+        return $besoin->getRecapBesoin();
+    }
 }

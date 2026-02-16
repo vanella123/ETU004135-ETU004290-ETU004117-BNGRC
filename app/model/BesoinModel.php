@@ -90,4 +90,9 @@ class BesoinModel {
         $stmt->execute([':ville_id' => $ville_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getRecapBesoin(){
+        $sql = "select * from view_resume_besoins"; 
+        return $this->db->query($sql)->fetch(PDO::FETCH_ASSOC);
+    }
 }
