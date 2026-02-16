@@ -131,8 +131,7 @@ Flight::route('POST /saisie', function () {
 Flight::route('GET /resumeBesoinsAjax', function () {
     $controller = new BesoinController();
     $result = $controller->getRecapBesoin();
-
-    Flight::render('recap_besoin', ['data' => $result]);
+    Flight::json($result);  // ✅ juste les données
 }); 
 
 
