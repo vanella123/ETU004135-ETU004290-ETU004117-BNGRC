@@ -59,4 +59,23 @@ class DonModel {
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Retourne le total d'argent disponible dans les dons
+    public function getTotalArgentDisponible() {
+        $sql = "
+            SELECT IFNULL(SUM(d.quantite),0) AS total_argent
+            FROM don d
+            JOIN article a ON d.article_id = a.id
+            JOIN type_besoin tb ON a.type_besoin_id = tb.id
+            WHERE tb.libelle = 'Argent'
+        ";
+        return $this->db->query($sql)->fetch(PDO::FETCH_ASSOC)['total_argent'];
+    }
+
+    // Retourne le total d'achats déjà réalisés
+    public function getTotalAchatsEffectues() {
+        $sql = "SELECT IFNULL(SUM(montant_total),0) AS total_achats FROM achat";
+        return $this->db->query($sql)->fetch(PDO::FETCH_ASSOC)['total_achats'];
+    }
+
 }
