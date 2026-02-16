@@ -1,5 +1,5 @@
 <?php
-namespace app\controller;
+namespace app\controllers;
 
 use app\model\ArticleModel;
 use PDO;
@@ -15,6 +15,7 @@ class ArticleController {
     // Afficher tous les articles
     // ======================
     public function getAllArticles() {
+        
         return $this->articleModel->getAllProduits();
     }
     public function getArticleById($id) {

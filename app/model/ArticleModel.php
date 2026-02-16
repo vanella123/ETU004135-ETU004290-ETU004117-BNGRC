@@ -14,7 +14,7 @@ class ArticleModel {
     // Obtenir tous les produits
     // ======================
     public function getAllProduits() {
-        $sql = "SELECT a.id, a.nom, a.prix_unitaire, tb.nom AS type_besoin
+        $sql = "SELECT a.id, a.nom, a.prix_unitaire, tb.libelle AS type_besoin
                 FROM article a
                 JOIN type_besoin tb ON a.type_besoin_id = tb.id
                 ORDER BY a.nom ASC";

@@ -12,7 +12,7 @@ class VilleController
         $db = Flight::db();
         $villeModel = new VilleModel($db);
 
-        return $villeModel->getAllVilles();
+        return $villeModel->getAllVille();
     }
 
     public function getVilleById(int $id)

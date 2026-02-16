@@ -17,12 +17,13 @@ use Flight;
 session_start();
 // Route pour afficher le formulaire de saisie
 Flight::route('/saisieBesoin', function () {
-    $villeController = new VilleController();
-    $produitController = new ArticleController();
+    $db = Flight::db();
+    $villeController = new VilleController($db);
+    $produitController = new ArticleController($db);
 
     Flight::render('SaisieBesoin', [
         'villes'   => $villeController->getAllVilles(),
-        'produits' => $produitController->getAllProduits(),
+        'produits' => $produitController->getAllArticles(),
     ]);
 });
 
