@@ -11,11 +11,34 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        
+        /* Thème bleu avec nuances */
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        .navbar, .footer {
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            color: white;
+        }
+
+        .navbar a, .footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background-color: #2a5298;
+            border-color: #1e3c72;
+        }
     </style>
 </head>
 <body>
-    <?php include 'header.php'; ?>
+    <?php include 'partials/header.php'; ?>
 
     <div class="container">
         <?php
@@ -25,7 +48,8 @@
             }
         ?>
     </div>
-    <?php include 'footer.php'; ?>
+
+    <?php include 'partials/footer.php'; ?>
 
     <!-- JS Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
