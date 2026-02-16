@@ -4,7 +4,7 @@ use flight\Engine;
 use app\controllers\BesoinController;
 use app\controllers\DonController;
 use app\controllers\DispatchController;
-
+use app\controllers\VilleController;
 
 use flight\net\Router;
 use Flight; 
@@ -13,4 +13,13 @@ use Flight;
  * @var Engine $app 
  */
 session_start();
+// Route pour afficher le formulaire de saisie
+Flight::route('/saisieBesoin', function() {
+    // On récupère toutes les villes
+    $controllerVille = new VilleController();
+    $villes =$controllerVille->getAllVille(); // retourne un tableau ex: [['id'=>1,'nom'=>'Antananarivo'],...]
+
+    // TODO: Adapter pour utiliser les nouveaux contrôleurs (Besoin/Don au lieu de Produit)
+    Flight::render('SaisieBesoin', ['villes' => $villes]);
+});
 

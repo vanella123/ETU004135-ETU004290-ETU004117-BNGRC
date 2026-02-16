@@ -11,23 +11,19 @@
         <label for="ville">Ville :</label>
         <select id="ville" name="ville" required>
             <option value="">--Sélectionnez une ville--</option>
-            <option value="Antananarivo">Antananarivo</option>
-            <option value="Toamasina">Toamasina</option>
-            <option value="Fianarantsoa">Fianarantsoa</option>
-            <!-- Ajoute toutes les villes ici -->
+            <?php foreach($villes as $ville) { ?>
+            <option value="<?= $ville['id'] ?>"><?= $ville['nom'] ?></option>
+            <?php } ?>
         </select>
         <br><br>
-
+        
         <!-- Produit -->
         <label for="produit">Produit :</label>
         <select id="produit" name="produit" required>
             <option value="">--Sélectionnez un produit--</option>
-            <option value="Riz">Riz</option>
-            <option value="Huile">Huile</option>
-            <option value="Tôle">Tôle</option>
-            <option value="Clou">Clou</option>
-            <option value="Argent">Argent</option>
-            <!-- Ajoute tous les produits ici -->
+            <?php foreach($produits as $produit) { ?>
+            <option value="<?= $produit['id'] ?>"><?= $produit['nom'] ?></option>
+            <?php } ?>
         </select>
         <br><br>
 
