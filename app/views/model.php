@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <?php include 'partials/header.php'; ?>
+    <?php include 'header.php'; ?>
 
     <div class="container">
         <?php
@@ -49,7 +49,7 @@
         ?>
     </div>
 
-    <?php include 'partials/footer.php'; ?>
+    <?php include 'footer.php'; ?>
 
     <!-- JS Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
