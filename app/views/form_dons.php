@@ -63,7 +63,7 @@
             <?php foreach ($dons as $don): ?>
                 <tr>
                     <td><?= $don['id'] ?></td>
-                    <td><?= $don['donateur'] ?? 'N/A' ?></td>
+                    <td><?= $don['donateur_nom'] ?? 'N/A' ?></td>
                     <td><?= $don['article'] ?? '' ?></td>
                     <td><?= $don['quantite'] ?></td>
                     <td><?= $don['date_saisie'] ?></td>
