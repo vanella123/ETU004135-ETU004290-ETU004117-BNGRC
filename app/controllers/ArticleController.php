@@ -15,6 +15,7 @@ class ArticleController {
     // Afficher tous les articles
     // ======================
     public function getAllArticles() {
+        
         return $this->articleModel->getAllProduits();
     }
     public function getArticleById($id) {

@@ -10,17 +10,17 @@ Class VilleModel {
         $this->db = $db;
     }
 
-    public function getAllVilles() {
-        $sql = "SELECT * FROM villes"; 
+    public function getAllVille() {
+        $sql = "SELECT * FROM ville"; 
         return $this->db->query($sql)->fetchAll();
     }
     public function getVilleById($id) {
-        $stmt = $this->db->prepare("SELECT id, nom FROM villes WHERE id = :id");
+        $stmt = $this->db->prepare("SELECT id, nom FROM ville WHERE id = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     public function addVille($nom){
-        $sql = "INSERT INTO villes (nom) VALUES (:nom)";
+        $sql = "INSERT INTO ville (nom) VALUES (:nom)";
         $stmt = $this->db->prepare($sql);
 
         $stmt->bindParam(':nom', $nom);
@@ -28,7 +28,7 @@ Class VilleModel {
         return $stmt->execute(); 
     }
     public function deleteVille($id){
-        $sql = "DELETE FROM villes WHERE id = :id";
+        $sql = "DELETE FROM ville WHERE id = :id";
         $stmt = $this->db->prepare($sql);
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -36,7 +36,7 @@ Class VilleModel {
         return $stmt->execute();
     }
     public function updateVille($id, $nom){
-        $sql = "UPDATE villes 
+        $sql = "UPDATE ville 
                 SET nom = :nom
                 WHERE id = :id";
 
