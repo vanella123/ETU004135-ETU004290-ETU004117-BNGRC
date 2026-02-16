@@ -22,3 +22,12 @@ addDon() (peut appeler automatiquement dispatch pour distribuer le don)
 
 3-DispatchController
 executerDispatch($don_id)
+
+
+Version 2 : 
+✅ 
+Troisieme question : 
+- creation de view pour afficher besoins totaux , satistfaits en montant , montant des besoins restant à satisfaire
+- besoins totaux : on somme - quantite * prix unitaire
+- tous ce qui ont statut "statifait : on somme - quantite * prix unitaire
+- besoins restant à satisfaire : on somme - quantite * prix unitaire pour les besoins qui n'ont pas le statut "satisfait"
