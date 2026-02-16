@@ -11,39 +11,41 @@ Class ProduitModel {
     }
 
     public function getAllProduits() {
-        $sql = "SELECT * FROM produits"; 
+        $sql = "SELECT * FROM article"; 
         return $this->db->query($sql)->fetchAll();
     }
     public function getProduitById($id) {
-        $stmt = $this->db->prepare("SELECT id, nom, categorie_id FROM produits WHERE id = :id");
+        $stmt = $this->db->prepare("SELECT * FROM article WHERE id = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function addProduit($nom, $categorie_id){
-        $sql = "INSERT INTO produits (nom, categorie_id) VALUES (:nom, :categorie_id)";
+    public function addProduit($nom, $type_besoin_id, $prix_unitaire){
+        $sql = "INSERT INTO article (nom, type_besoin_id , prix_unitaire) VALUES (:nom, :type_besoin_id, :prix_unitaire)";
         $stmt = $this->db->prepare($sql);
 
         $stmt->bindParam(':nom', $nom);
-        $stmt->bindParam(':categorie_id', $categorie_id);
-
+        $stmt->bindParam(':type_besoin_id', $type_besoin_id);
+        $stmt->bindParam(':prix_unitaire', $prix_unitaire);
         return $stmt->execute(); 
     }
     public function deleteProduit($id){
-        $sql = "DELETE FROM produits WHERE id = :id";
+        $sql = "DELETE FROM article WHERE id = :id";
         $stmt = $this->db->prepare($sql);
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
-    public function updateProduit($id, $nom, $categorie_id){
-        $sql = "UPDATE produits 
-                SET nom = :nom, categorie_id = :categorie_id
+    public function updateProduit($id, $nom, $type_besoin_id, $prix_unitaire){
+        $sql = "UPDATE article 
+                SET nom = :nom, type_besoin_id = :type_besoin_id, prix_unitaire = :prix_unitaire
                 WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
 
         $stmt->bindParam(':nom', $nom);
+        $stmt->bindParam(':type_besoin_id', $type_besoin_id);
+        $stmt->bindParam(':prix_unitaire', $prix_unitaire);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         return $stmt->execute();
