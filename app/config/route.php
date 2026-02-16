@@ -136,4 +136,36 @@ Flight::route('GET /resumeBesoinsAjax', function () {
 }); 
 
 
+Flight::route('GET|POST /achats', function(){
+    $db = Flight::db();
+    $achatController = new \app\controllers\AchatController();
+    $articleController = new \app\controllers\ArticleController($db);
+    $villeController = new \app\controllers\VilleController($db);
+
+    $message = null;
+
+    // Traitement formulaire
+    if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        $ville_id = $_POST['ville_id'] ?? null;
+        $article_id = $_POST['article_id'] ?? null;
+        $quantite = $_POST['quantite'] ?? null;
+        $frais = $_POST['frais'] ?? 10;
+        $date = date('Y-m-d');
+
+        if(!$ville_id || !$article_id || !$quantite){
+            $message = ['type'=>'danger','text'=>'Tous les champs sont obligatoires'];
+        } else {
+            $res = $achatController->addAchat($article_id, $ville_id, $quantite, $articleController->getArticleById($article_id)['prix_unitaire'], $frais, $date);
+            $message = $res['success'] ? ['type'=>'success','text'=>$res['message']] : ['type'=>'danger','text'=>$res['message']];
+        }
+    }
+
+    $articles = $articleController->getAllArticles();
+    $villes = $villeController->getAllVilles();
+
+    $ville_filter = $_GET['ville_filter'] ?? null;
+    $achats = $achatController->getAchats($ville_filter);
+
+    Flight::render('achats', compact('articles','villes','achats','message'));
+});
 
