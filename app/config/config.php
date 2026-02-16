@@ -46,7 +46,7 @@ $ds = DIRECTORY_SEPARATOR; // Séparateur de dossier compatible Windows/Linux
 $app->path(__DIR__ . $ds . '..' . $ds . '..');
 if (!defined('BASE_URL')) {
 
-    define('BASE_URL', '/'); // ou '/monapp' si sous-dossier
+	define('BASE_URL', '/'); // ou '/monapp' si sous-dossier
 }
 
 // Core config variables
