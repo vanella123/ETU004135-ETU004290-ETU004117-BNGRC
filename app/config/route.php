@@ -25,13 +25,12 @@ Flight::route('/saisieBesoin', function () {
     ]);
 });
 
-Flight::route('/',function(){
-    $controller = new DashbordController();
-    $bord = $controller->getbord();
-    Flight::render('dashbord', ['dashboard' => $bord]);
-});
+Flight::route('/', function(){
 
-Flight::route('GET /test', function () {
-    echo "Route test OK !";
+    $controller = new DashbordController();
+    $bord = $controller->getbord() ;
+    Flight::render('dashbord', ['dashboard' => $bord]);
+    
+
 });
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\model;
 
 use PDO;
 use Exception;
@@ -11,6 +11,46 @@ class DispatchModel {
 
     public function __construct($db){
         $this->db = $db;
+    }
+
+    /**
+     * Dispatch TOUS les dons qui ont encore un reste non distribué,
+     * par ordre chronologique (date_saisie ASC).
+     */
+    public function dispatchTousLesDons(){
+
+        $donsNonRepartis = $this->getDonsAvecReste();
+        $resultats = [];
+
+        foreach ($donsNonRepartis as $don) {
+            $resultats[] = [
+                'don_id'   => $don['id'],
+                'article'  => $don['article_id'],
+                'quantite' => $don['reste'],
+                'resultat' => $this->executerDispatch($don['id'])
+            ];
+        }
+
+        return $resultats;
+    }
+
+    /**
+     * Récupère tous les dons qui ont encore de la quantité non distribuée,
+     * triés par date de saisie (les plus anciens d'abord).
+     */
+    private function getDonsAvecReste(){
+
+        $sql = "
+            SELECT d.id, d.article_id,
+                   (d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS reste
+            FROM don d
+            LEFT JOIN repartition_don r ON d.id = r.don_id
+            GROUP BY d.id
+            HAVING reste > 0
+            ORDER BY d.date_saisie ASC
+        ";
+
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function executerDispatch($don_id){

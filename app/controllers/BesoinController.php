@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\BesoinModel;
+use app\model\BesoinModel;
 use Flight;
 use Throwable;
 
