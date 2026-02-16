@@ -30,6 +30,14 @@ class ArticleModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Récupérer l'ID d'un article par son nom
+    public function getIdByNomArticle($nom) {
+        $stmt = $this->db->prepare("SELECT id FROM article WHERE nom = :nom");
+        $stmt->execute(['nom' => $nom]);
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $res ? $res['id'] : null;
+    }
+
     // ======================
     // Ajouter un produit
     // ======================

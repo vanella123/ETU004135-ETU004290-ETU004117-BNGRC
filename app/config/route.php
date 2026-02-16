@@ -3,10 +3,8 @@ namespace app\config;
 use flight\Engine;
 use app\controllers\BesoinController;
 use app\controllers\DonController;
-    use app\controllers\DispatchController;
-    use app\controllers\VilleController;
-    use app\controllers\DashbordController;
-    use app\controllers\ArticleController;
+use app\controllers\DispatchController;
+use app\controllers\VilleController;
 
 use flight\net\Router;
 use Flight; 
@@ -36,7 +34,4 @@ Flight::route('/',function(){
 Flight::route('GET /test', function () {
     echo "Route test OK !";
 });
-
-
-
 
