@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\BesoinModel;
+use app\model\BesoinModel;
 use Flight;
 use Throwable;
 
@@ -23,19 +23,25 @@ class BesoinController {
 
         try {
 
-            $data = Flight::request()->data;
+            $data = Flight::request()->data; // support form submissions & JSON payloads
 
-            $id = $besoin->insertBesoin(
-                $data->ville_id,
-                $data->article_id,
-                $data->quantite,
-                $data->date_saisie
-            );
+            $villeId = $data->ville_id ;
+            $articleId = $data->article_id ;
+            $quantite = $data->quantite ;
+            $dateSaisie = $data->date_saisie ;
+
+            if (empty($villeId) || empty($articleId) || empty($quantite) || empty($dateSaisie)) {
+                return [
+                    "success" => false,
+                    "message" => "Champs requis manquants pour l'ajout du besoin."
+                ];
+            }
+
+            $result = $besoin->addBesoin($villeId, $articleId, $quantite, $dateSaisie);
 
             return [
-                "success" => true,
-                "message" => "Besoin ajouté avec succès",
-                "id" => $id
+                "success" => $result,
+                "message" => $result ? "Besoin ajouté avec succès" : "Échec de l'enregistrement du besoin."
             ];
 
         } catch (Throwable $e){
