@@ -15,6 +15,9 @@ use Flight;
  */
 session_start();
 // Route pour afficher le formulaire de saisie
+Flight::route('/', function(){
+    Flight::render('SaisieBesoin');
+});
 Flight::route('/saisieBesoin', function() {
     // On récupère toutes les villes
     $controllerVille = new VilleController();
