@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\DonModel;
+use app\model\DonModel;
 use Flight;
 use Throwable;
 
