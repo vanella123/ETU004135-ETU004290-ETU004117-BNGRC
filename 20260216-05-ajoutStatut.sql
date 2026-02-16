@@ -19,8 +19,8 @@ SELECT
     SUM(CASE 
         WHEN b.statut_id <> 2 OR b.statut_id IS NULL
         THEN b.quantite * a.prix_unitaire
-        ELSE 0
+        ELSE 0 
     END) AS besoins_restants
 
-FROM besoin b
+FROM besoin b 
 JOIN article a ON b.article_id = a.id;
