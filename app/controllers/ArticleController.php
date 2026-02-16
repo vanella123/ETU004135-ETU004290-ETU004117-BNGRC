@@ -1,7 +1,7 @@
 <?php
 namespace app\controller;
 
-use app\model\ProduitModel;
+use app\model\ArticleModel;
 use PDO;
 
 class ArticleController {
