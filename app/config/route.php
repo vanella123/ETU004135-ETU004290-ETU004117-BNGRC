@@ -31,16 +31,6 @@ Flight::route('GET /saisieBesoin', function () {
     ]);
 });
 
-Flight::route('POST /saisieBesoin', function () {
-    $controller = new BesoinController();
-    $result = $controller->addBesoin();
-
-    $_SESSION['besoin_feedback'] = $result;
-
-    $baseUrl = Flight::get('flight.base_url');
-    Flight::redirect($baseUrl . '/saisieBesoin');
-});
-
 Flight::route('/', function () {
     $controller = new DashbordController();
     $bord = $controller->getbord();
@@ -101,6 +91,16 @@ Flight::route('GET|POST /form_dons', function() {
 Flight::route('POST /saisie', function () {
     $controller = new BesoinController();
     $result = $controller->addBesoin();
-    Flight::json($result);
+    if($result['success']){
+        $_SESSION['besoin_feedback'] = [
+            'success' => true,
+            'message' => $result['message']
+        ];
+    } else {
+        $_SESSION['besoin_feedback'] = [
+            'success' => false,
+            'message' => $result['message']
+        ]; 
+    } 
 });
 

@@ -87,7 +87,7 @@
             <?= htmlspecialchars($feedback['message'] ?? '', ENT_QUOTES, 'UTF-8') ?>
         </div>
     <?php } ?>
-    <form action="<?= BASE_URL ?>/saisieBesoin" method="POST">
+    <form action="/saisie" method="POST">
         <!-- Ville -->
         <label for="ville">Ville :</label>
         <select id="ville" name="ville_id" required>
