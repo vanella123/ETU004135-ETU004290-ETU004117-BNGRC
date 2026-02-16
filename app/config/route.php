@@ -1,11 +1,9 @@
 <?php 
 namespace app\config;
 use flight\Engine;
-use app\controllers\UserController;
-use app\controllers\MessageController;
+use app\controllers\BesoinController;
 use app\controllers\ProduitController;
-use app\controllers\CategorieController;
-use app\controllers\EchangeController;
+use app\controllers\VilleController;
 
 use flight\net\Router;
 use Flight; 
@@ -17,11 +15,12 @@ session_start();
 // Route pour afficher le formulaire de saisie
 Flight::route('/saisieBesoin', function() {
     // On récupère toutes les villes
-    $villes = getAllVille(); // retourne un tableau ex: [['id'=>1,'nom'=>'Antananarivo'],...]
+    $controllerVille = new VilleController();
+    $controllerProduit = new ProduitController();
+    $villes =$controllerVille->getAllVille(); // retourne un tableau ex: [['id'=>1,'nom'=>'Antananarivo'],...]
 
     // On récupère tous les produits
-    $produits = getAllProduit(); // retourne un tableau ex: [['id'=>1,'nom'=>'Riz'], ...]
-    Fligh
-
+    $produits =$controllerProduit->getAllProduit(); // retourne un tableau ex: [['id'=>1,'nom'=>'Riz'], ...]
+    Flight::render('SaisieBesoin', ['villes' => $villes, 'produits' => $produits]);
 });
 
