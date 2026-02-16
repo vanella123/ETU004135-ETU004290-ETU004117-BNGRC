@@ -44,7 +44,6 @@ Flight::route('POST /saisieBesoin', function () {
 Flight::route('/', function () {
     $controller = new DashbordController();
     $bord = $controller->getbord();
-<<<<<<< HEAD
     $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
     Flight::render('dashbord', ['dashboard' => $data]);
 
@@ -55,9 +54,9 @@ Flight::route('POST /dispatch', function(){
     $controller = new DispatchController();
     $controller->dispatchAll();
     Flight::redirect('/');
-=======
+
     Flight::render('dashbord', ['dashboard' => $bord]);
->>>>>>> 09cf478770258820e98e4dc76bd8666d7dfca5ef
+
 });
 
 
