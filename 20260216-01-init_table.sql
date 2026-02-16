@@ -43,7 +43,6 @@ CREATE TABLE don (
     quantite INT NOT NULL,
     donateur_nom VARCHAR(255),
     date_saisie DATE NOT NULL,
-    FOREIGN KEY (ville_id) REFERENCES ville(id) ON DELETE CASCADE,
     FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE
 );
 
@@ -110,7 +109,7 @@ INSERT INTO besoin (ville_id, article_id, quantite, date_saisie) VALUES
 (5, 4, 60, '2026-02-07');
 
 
-INSERT INTO don (article_id, quantite, donateur, date_saisie) VALUES
+INSERT INTO don (article_id, quantite, donateur_nom, date_saisie) VALUES
 -- Riz
 (1, 1000, 'Association Riz Pour Tous', '2026-02-02'),
 
