@@ -22,33 +22,19 @@ class DonController {
         return $don->getAllDons();
     }
 
-    public function addDon(){
-
-        $db = Flight::db();
-        $don = new DonModel($db);
-
+    public function addDon($article_id, $quantite, $donateur, $date_saisie){
         try {
-
-            $data = Flight::request()->data;
-
-            $id = $don->insertDon(
-                $data->article_id,
-                $data->quantite,
-                $data->date_saisie
+            $id = $this->donModel->insertDon(
+                $article_id,
+                $quantite,
+                $donateur,
+                $date_saisie
             );
 
-            return [
-                "success" => true,
-                "message" => "Don ajouté avec succès",
-                "id" => $id
-            ];
+            return $id; // retourne l'id inséré
 
         } catch (Throwable $e){
-
-            return [
-                "success" => false,
-                "message" => $e->getMessage()
-            ];
+            return false;
         }
     }
 }
