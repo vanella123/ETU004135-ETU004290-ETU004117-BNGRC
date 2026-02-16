@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\model\DonModel;
+use app\model\DispatchModel;
 use Flight;
 use Throwable;
 
@@ -31,7 +32,12 @@ class DonController {
                 $date_saisie
             );
 
-            return $id; // retourne l'id inséré
+            // Dispatch automatique après chaque insertion de don
+            $db = Flight::db();
+            $dispatch = new DispatchModel($db);
+            $dispatch->dispatchTousLesDons();
+
+            return $id;
 
         } catch (Throwable $e){
             return false;

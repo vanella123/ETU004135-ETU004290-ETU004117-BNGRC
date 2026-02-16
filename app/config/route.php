@@ -54,9 +54,6 @@ Flight::route('POST /dispatch', function(){
     $controller = new DispatchController();
     $controller->dispatchAll();
     Flight::redirect('/');
-
-    Flight::render('dashbord', ['dashboard' => $bord]);
-
 });
 
 

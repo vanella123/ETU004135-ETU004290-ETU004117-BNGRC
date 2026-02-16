@@ -1,0 +1,24 @@
+✅ TO-DO / Checklist Projet Dispatch de Dons
+1️⃣ Base de données (MySQL)
+
+1-DispatchModel
+executerDispatch($don_id) ✅ répartit automatiquement les dons sur les besoins par date
+getResteDon()
+getBesoinsNonSatisfaits()
+
+2-DashboardModel
+getDashboardData() → liste ville + besoins + dons attribués
+getTotalParVille() (option résumé total par ville)
+
+3️⃣ Controllers (app/controllers)
+
+1-BesoinController
+getAllBesoin()
+addBesoin()
+
+2-DonController
+getAllDon()
+addDon() (peut appeler automatiquement dispatch pour distribuer le don)
+
+3-DispatchController
+executerDispatch($don_id)
