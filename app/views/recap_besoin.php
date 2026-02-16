@@ -96,7 +96,7 @@ button:hover {
         <td id="satisfait">-</td>
         <td id="restant">-</td>
     </tr>
-</table>
+</tabl e>
 
 <br>
 
