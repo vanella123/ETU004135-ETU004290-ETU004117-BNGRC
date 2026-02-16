@@ -2,7 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\DonModel;
+use app\model\DonModel;
+use app\model\DispatchModel;
 use Flight;
 use Throwable;
 
@@ -20,20 +21,26 @@ class DonController {
 
         $db = Flight::db();
         $don = new DonModel($db);
+        $dispatch = new DispatchModel($db);
 
         try {
 
             $data = Flight::request()->data;
 
+            // Insérer le don
             $id = $don->insertDon(
                 $data->article_id,
                 $data->quantite,
-                $data->date_saisie
+                $data->date_saisie,
+                $data->donateur_nom ?? null
             );
+
+            // Dispatcher TOUS les dons non encore répartis (y compris celui-ci)
+            $dispatch->dispatchTousLesDons();
 
             return [
                 "success" => true,
-                "message" => "Don ajouté avec succès",
+                "message" => "Don ajouté et dispatch de tous les dons effectué avec succès",
                 "id" => $id
             ];
 

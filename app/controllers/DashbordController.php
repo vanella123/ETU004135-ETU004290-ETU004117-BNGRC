@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\DashboardModel;
+use app\model\DashboardModel;
 use Flight;
 use Throwable;
 
