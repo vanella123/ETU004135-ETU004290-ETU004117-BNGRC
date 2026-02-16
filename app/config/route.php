@@ -89,18 +89,17 @@ Flight::route('GET|POST /form_dons', function() {
 });
 
 Flight::route('POST /saisie', function () {
+
     $controller = new BesoinController();
     $result = $controller->addBesoin();
-    if($result['success']){
-        $_SESSION['besoin_feedback'] = [
-            'success' => true,
-            'message' => $result['message']
-        ];
-    } else {
-        $_SESSION['besoin_feedback'] = [
-            'success' => false,
-            'message' => $result['message']
-        ]; 
-    } 
+
+    $_SESSION['besoin_feedback'] = [
+        'success' => $result['success'],
+        'message' => $result['message']
+    ];
+
+    // 🔥 TRÈS IMPORTANT : redirection
+    Flight::redirect('/saisie');
 });
+
 
