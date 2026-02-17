@@ -239,18 +239,17 @@ $totals = $totals ?? [
         <option value="croissant" <?= $modeDispatch === 'croissant' ? 'selected' : '' ?>>📈 Par ordre croissant des besoins</option>
     </select>
 </div>
-
 <!-- Boutons -->
 <div class="top-bar">
     <form method="POST" action="recharger" style="display: inline;">
         <button type="submit" class="btn btn-reload" onclick="return confirm('⚠️ Attention ! Cela va SUPPRIMER toutes les répartitions et remettre tous les dons comme non répartis. Continuer ?')">🔄 Recharger</button>
     </form>
     <form method="POST" action="simulate" style="display: inline;">
-        <input type="hidden" name="mode" value="date" class="hidden-mode">
+        <input type="hidden" name="mode" value="<?= htmlspecialchars($modeDispatch) ?>" class="hidden-mode">
         <button type="submit" class="btn btn-simulate">📋 Simuler</button>
     </form>
     <form method="POST" action="dispatch" style="display: inline;">
-        <input type="hidden" name="mode" value="date" class="hidden-mode">
+        <input type="hidden" name="mode" value="<?= htmlspecialchars($modeDispatch) ?>" class="hidden-mode">
         <button type="submit" class="btn btn-validate" onclick="return confirm('Confirmer le dispatch réel de TOUS les dons ?')">✅ Valider</button>
     </form>
     <form method="GET" action="/" style="display: inline;">
