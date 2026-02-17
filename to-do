@@ -24,56 +24,24 @@ page simulation.php :  simuler + anuller + valider (ok)
     Ajout de la simulation (simuler sans INSERT), affichage détaillé des répartitions prévues et prévision d'état des besoins."
 
 
-        PARTIE VANELLA :
 
-======== sasie de besoin ============
- Formualire pour entrer le besoin : 
-      - liste deroulante ville 
-      - liste deroulante de produit
-      - qauntite 
-      - date de livraison
-      - bouton de validation
+version 3: RÉALISATIONS 
 
-Route : /saiseBesoin 
-    - getAllVille 
-    - getAllProduit
+1) Dashboard (UI + backend)
+   - Pages : `app/views/dashbord.php` — cartes de totaux (nombre de villes, satisfaits, en cours, en attente), dropdown de sélection du mode de dispatch (Chronologique / Proportionnel / Par ordre croissant), bouton `Recharger` (reset des répartitions), intégration UI pour Simuler / Valider / Annuler. (DONE)
+   - Page : `app/views/simulation.php` — aperçu simulation (intégrée). (DONE)
+   - Modèle : `app/model/DashboardModel.php` — fonctions :  `getTotals()`, `getDonsNonRepartis()`, `resetRepartitions()`, 
+   - Contrôleur : `app/controllers/DashbordController.php` — fonctions : ` `getDonsNonRepartis()`, `resetRepartitions()`. (DONE)
+   - Routes : `app/config/route.php` — endpoints dashboard/totals/reset pointent maintenant vers `DashbordController`. (DONE)
 
-========== recapitulation des besoins ============
-Version 2 : 
-✅ 
-
-Troisieme question : 
-- creation de view pour afficher besoins totaux , satistfaits en montant , montant des besoins restant à satisfaire
-- besoins totaux : on somme - quantite * prix unitaire
-- tous ce qui ont statut "statifait : on somme - quantite * prix unitaire
-- besoins restant à satisfaire : on somme - quantite * prix unitaire pour les besoins qui n'ont pas le statut "satisfait"
-
-Page : 
-Recapitulation des besoins : 
-| Ville | Besoin Total | Besoin Satisfait | Besoin Restant |
-|------|--------------|------------------|-----------------|
-| Paris | 1000€        | 600€             | 400€            |
-| Lyon  | 800€         | 500€             | 300€            |
-| Marseille | 1200€      | 900€             | 300€            | 
-Total : 3000€       | 2000€            | 1000€           |
-
-Bouton actualiser en ajax 
+2) Dispatch (trois modes : Chronologique / Proportionnel / Ordre croissant)
+   - Modèle : `app/model/DispatchModel.php`
+       • Proportionnel : `dispatchProportionnel()`, `executerDispatchProportionnel($don_id)`, `simulerDispatchProportionnel()` — implémentation de la méthode du **plus grand reste** (part exacte → `floor()` + distribution du reste selon la partie décimale). (DONE)
+   - Contrôleur : `app/controllers/DispatchController.php` — méthodes exposées : `dispatchAll()`, `executerDispatch()`, `simuler()`, `simulerProportionnel()`, `dispatchProportionnel()`, `. (DONE)
+   - UI : intégration dans `app/views/dashbord.php` — sélection du mode, simulation et exécution. (DONE)
 
 
-
-======= model.php =======
-
-creation d'un model php avec footer et header de theme bleu avec nuance 
-comme les template je veux que ce soit moderne 
-
-et on integre une page dans une model mais pas le contraire 
-
-- les fonctionnalites jusqu'ici : 
-    tableau de bord pour faire la distribution des dons pour les besoins
-    formulaire de saisie de besoin
-    formualire de saisie de don
-    tableau pour voir les besoins totaux , satisfait et restant
-    achat de produit pour les besoins a partir des dons en argent 
-
-
+4) Base de données / opérations
+   - Table `repartition_don` : insertions gérées par `DispatchModel` ; reset via `DashboardModel::resetRepartitions()` (bouton `Recharger`). (DONE)
+   -Boutton recharger : - fonction resetRepartitions() -> initialize le id_status en en attente et drop les insertions dans le repartition_don
 
