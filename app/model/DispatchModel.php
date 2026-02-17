@@ -257,4 +257,211 @@ class DispatchModel {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // ========== DISPATCH PROPORTIONNEL ==========
+
+    /**
+     * Dispatch proportionnel de TOUS les dons non répartis.
+     * Chaque don est réparti proportionnellement aux besoins restants du même article.
+     */
+    public function dispatchProportionnel(){
+        $donsNonRepartis = $this->getDonsAvecReste();
+        $resultats = [];
+
+        foreach ($donsNonRepartis as $don) {
+            $resultats[] = [
+                'don_id'   => $don['id'],
+                'article'  => $don['article_id'],
+                'quantite' => $don['reste'],
+                'resultat' => $this->executerDispatchProportionnel($don['id'])
+            ];
+        }
+
+        return $resultats;
+    }
+
+    /**
+     * Exécute le dispatch proportionnel d'un don spécifique.
+     */
+    public function executerDispatchProportionnel($don_id){
+        try {
+            $this->db->beginTransaction();
+
+            $stmt = $this->db->prepare("SELECT * FROM don WHERE id = ?");
+            $stmt->execute([$don_id]);
+            $don = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$don) throw new Exception("Don introuvable");
+
+            $resteDon = $this->getResteDon($don_id);
+            if ($resteDon <= 0) {
+                $this->db->commit();
+                return "Don déjà totalement distribué";
+            }
+
+            $besoins = $this->getBesoinsNonSatisfaits($don['article_id']);
+            if (empty($besoins)) {
+                $this->db->commit();
+                return "Aucun besoin non satisfait pour cet article";
+            }
+
+            // Calcul du total des restes de besoins
+            $totalBesoins = 0;
+            foreach ($besoins as $b) {
+                $totalBesoins += $b['reste'];
+            }
+            if ($totalBesoins == 0) {
+                $this->db->commit();
+                return "Total des besoins restants = 0";
+            }
+
+            // Calcul proportionnel
+            $repartitions = [];
+            $totalDistribue = 0;
+            foreach ($besoins as $b) {
+                $part = floor(($b['reste'] / $totalBesoins) * $resteDon);
+                $repartitions[] = [
+                    'besoin_id' => $b['id'],
+                    'quantite' => $part
+                ];
+                $totalDistribue += $part;
+            }
+
+            // Gestion du reste (arrondi) — distribué aux plus gros besoins
+            $reste = $resteDon - $totalDistribue;
+            usort($besoins, function($a, $b) { return $b['reste'] - $a['reste']; });
+            $i = 0;
+            while ($reste > 0) {
+                foreach ($repartitions as &$rep) {
+                    if ($rep['besoin_id'] == $besoins[$i]['id']) {
+                        $rep['quantite'] += 1;
+                        $reste--;
+                        break;
+                    }
+                }
+                $i = ($i + 1) % count($besoins);
+            }
+
+            // Insertion en base
+            $insert = $this->db->prepare("
+                INSERT INTO repartition_don (don_id, besoin_id, quantite_repartie, date_repartition)
+                VALUES (?, ?, ?, NOW())
+            ");
+            foreach ($repartitions as $rep) {
+                if ($rep['quantite'] > 0) {
+                    $insert->execute([$don_id, $rep['besoin_id'], $rep['quantite']]);
+                }
+            }
+
+            $this->db->commit();
+            return "Dispatch proportionnel terminé";
+
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * SIMULE le dispatch proportionnel sans modifier la base.
+     */
+    public function simulerDispatchProportionnel(){
+        $tousLesBesoins = $this->getTousLesBesoins();
+        $donsNonRepartis = $this->getDonsAvecReste();
+        $repartitionsSimulees = [];
+        $donsSimules = [];
+
+        // Copie locale des restes de besoins pour simulation successive
+        $restesBesoins = [];
+        foreach ($tousLesBesoins as $b) {
+            $restesBesoins[$b['id']] = $b['quantite_restante'];
+        }
+
+        foreach ($donsNonRepartis as $don) {
+            $resteDon = $don['reste'];
+            $besoins = $this->getBesoinsNonSatisfaits($don['article_id']);
+
+            // Recalculer avec restes simulés
+            $besoinsActifs = [];
+            foreach ($besoins as $b) {
+                $resteSimule = $restesBesoins[$b['id']] ?? $b['reste'];
+                if ($resteSimule > 0) {
+                    $b['reste_simule'] = $resteSimule;
+                    $besoinsActifs[] = $b;
+                }
+            }
+
+            $totalBesoins = 0;
+            foreach ($besoinsActifs as $b) $totalBesoins += $b['reste_simule'];
+
+            $repartitionsDon = [];
+            if ($totalBesoins > 0) {
+                $totalDistribue = 0;
+                foreach ($besoinsActifs as $b) {
+                    $part = floor(($b['reste_simule'] / $totalBesoins) * $resteDon);
+                    $repartitionsDon[] = [
+                        'besoin_id' => $b['id'],
+                        'ville' => $b['ville'] ?? 'N/A',
+                        'quantite' => $part
+                    ];
+                    $totalDistribue += $part;
+                }
+
+                // Reste d'arrondi
+                $reste = $resteDon - $totalDistribue;
+                usort($besoinsActifs, function($a, $b) { return $b['reste_simule'] - $a['reste_simule']; });
+                $i = 0;
+                while ($reste > 0) {
+                    foreach ($repartitionsDon as &$rep) {
+                        if ($rep['besoin_id'] == $besoinsActifs[$i]['id']) {
+                            $rep['quantite'] += 1;
+                            $reste--;
+                            break;
+                        }
+                    }
+                    $i = ($i + 1) % count($besoinsActifs);
+                }
+
+                // Mettre à jour les restes simulés
+                foreach ($repartitionsDon as $rep) {
+                    $restesBesoins[$rep['besoin_id']] = max(0, ($restesBesoins[$rep['besoin_id']] ?? 0) - $rep['quantite']);
+                }
+            }
+
+            $donsSimules[] = [
+                'don_id' => $don['id'],
+                'article_id' => $don['article_id'],
+                'reste' => $don['reste'],
+                'repartitions' => $repartitionsDon
+            ];
+
+            foreach ($repartitionsDon as $rep) {
+                $repartitionsSimulees[] = [
+                    'don_id' => $don['id'],
+                    'besoin_id' => $rep['besoin_id'],
+                    'quantite' => $rep['quantite'],
+                    'ville' => $rep['ville']
+                ];
+            }
+        }
+
+        // Calculer l'état final pour chaque besoin
+        foreach ($tousLesBesoins as &$besoin) {
+            $ajoutSimule = 0;
+            foreach ($repartitionsSimulees as $rep) {
+                if ($rep['besoin_id'] == $besoin['id']) {
+                    $ajoutSimule += $rep['quantite'];
+                }
+            }
+            $besoin['ajout_simule'] = $ajoutSimule;
+            $besoin['nouveau_attribue'] = $besoin['quantite_attribuee'] + $ajoutSimule;
+            $besoin['nouveau_reste'] = max(0, $besoin['quantite_restante'] - $ajoutSimule);
+        }
+
+        return [
+            'besoins' => $tousLesBesoins,
+            'repartitions_simulees' => $repartitionsSimulees,
+            'dons' => $donsSimules
+        ];
+    }
 }

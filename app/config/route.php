@@ -74,9 +74,16 @@ Flight::route('POST /simulate', function(){
     $bord = $controller->getbord();
     $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
     
-    // Ajouter la simulation
+    // Récupérer le mode de dispatch choisi
+    $mode = $_POST['mode'] ?? 'date';
+    
+    // Ajouter la simulation selon le mode
     $dispatchController = new DispatchController();
-    $simulationResult = $dispatchController->simuler();
+    if ($mode === 'proportionnel') {
+        $simulationResult = $dispatchController->simulerProportionnel();
+    } else {
+        $simulationResult = $dispatchController->simuler();
+    }
 
     // Récupère aussi les totaux pour l'affichage en simulation via le controller
     $totalsResp = $controller->getTotals();
@@ -97,7 +104,8 @@ Flight::route('POST /simulate', function(){
         'totals'    => $totals,
         'donsNonRepartis' => $donsNonRepartis,
         'simulation' => $simForView,
-        'showSimulation' => $showSimulation
+        'showSimulation' => $showSimulation,
+        'modeDispatch' => $mode
     ]);
 });
 
@@ -110,8 +118,13 @@ Flight::route('GET /simulation', function(){
 
 // Bouton Dispatch : lance le dispatch global puis redirige vers le dashboard
 Flight::route('POST /dispatch', function(){
+    $mode = $_POST['mode'] ?? 'date';
     $controller = new DispatchController();
-    $controller->dispatchAll();
+    if ($mode === 'proportionnel') {
+        $controller->dispatchProportionnel();
+    } else {
+        $controller->dispatchAll();
+    }
     Flight::redirect('/');
 });
 

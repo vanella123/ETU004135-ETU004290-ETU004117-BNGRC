@@ -45,6 +45,34 @@
         .btn-reload { background-color: #8e44ad; }
         .btn-reload:hover { background-color: #732d91; }
 
+        .dispatch-mode {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .dispatch-mode label { font-weight: bold; color: #2c3e50; font-size: 14px; }
+        .dispatch-mode select {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 2px solid #3498db;
+            font-size: 14px;
+            background: white;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        .mode-tag {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .mode-tag.proportionnel { background: #e67e22; }
+
         .ville-card {
             background: white;
             padding: 15px;
@@ -200,15 +228,27 @@ $totals = $totals ?? [
     </div>
 </div>
 
+<!-- Choix du mode de dispatch -->
+<?php $modeDispatch = $modeDispatch ?? 'date'; ?>
+<div class="dispatch-mode">
+    <label for="mode-select">📦 Mode de dispatch :</label>
+    <select id="mode-select" onchange="document.querySelectorAll('.hidden-mode').forEach(e => e.value = this.value)">
+        <option value="date" <?= $modeDispatch === 'date' ? 'selected' : '' ?>>📅 Par date (chronologique)</option>
+        <option value="proportionnel" <?= $modeDispatch === 'proportionnel' ? 'selected' : '' ?>>⚖️ Par proportion</option>
+    </select>
+</div>
+
 <!-- Boutons -->
 <div class="top-bar">
     <form method="POST" action="recharger" style="display: inline;">
         <button type="submit" class="btn btn-reload" onclick="return confirm('⚠️ Attention ! Cela va SUPPRIMER toutes les répartitions et remettre tous les dons comme non répartis. Continuer ?')">🔄 Recharger</button>
     </form>
     <form method="POST" action="simulate" style="display: inline;">
+        <input type="hidden" name="mode" value="date" class="hidden-mode">
         <button type="submit" class="btn btn-simulate">📋 Simuler</button>
     </form>
     <form method="POST" action="dispatch" style="display: inline;">
+        <input type="hidden" name="mode" value="date" class="hidden-mode">
         <button type="submit" class="btn btn-validate" onclick="return confirm('Confirmer le dispatch réel de TOUS les dons ?')">✅ Valider</button>
     </form>
     <form method="GET" action="/" style="display: inline;">
@@ -248,9 +288,13 @@ $totals = $totals ?? [
 </div>
 <?php endif; ?>
 
-<?php if (isset($showSimulation)): ?>
+<?php if (isset($showSimulation) && $showSimulation): ?>
     <div class="info-simulation">
-        ⚠️ Mode simulation — Les lignes en <span style="background: #fff9c4; padding: 2px 6px;">jaune</span> montrent les nouvelles distributions 
+        ⚠️ Mode simulation 
+        <span class="mode-tag <?= ($modeDispatch ?? 'date') === 'proportionnel' ? 'proportionnel' : '' ?>">
+            <?= ($modeDispatch ?? 'date') === 'proportionnel' ? '⚖️ Proportionnel' : '📅 Par date' ?>
+        </span>
+        — Les lignes en <span style="background: #fff9c4; padding: 2px 6px;">jaune</span> montrent les nouvelles distributions 
     </div>
 <?php endif; ?>
 

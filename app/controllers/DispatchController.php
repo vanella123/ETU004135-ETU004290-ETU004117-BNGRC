@@ -64,7 +64,7 @@ class DispatchController {
     }
 
     /**
-     * Simuler le dispatch sans l'exécuter réellement
+     * Simuler le dispatch sans l'exécuter réellement (par date — chronologique)
      */
     public function simuler(){
 
@@ -83,6 +83,55 @@ class DispatchController {
 
         } catch (Throwable $e) {
 
+            return [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Simuler le dispatch proportionnel sans l'exécuter
+     */
+    public function simulerProportionnel(){
+
+        $db = Flight::db();
+        $dispatch = new DispatchModel($db);
+
+        try {
+            $simulation = $dispatch->simulerDispatchProportionnel();
+
+            return [
+                "success" => true,
+                "message" => "Simulation proportionnelle effectuée avec succès",
+                "simulation" => $simulation
+            ];
+        } catch (Throwable $e) {
+            return [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Dispatcher proportionnellement TOUS les dons non répartis
+     */
+    public function dispatchProportionnel(){
+
+        $db = Flight::db();
+        $dispatch = new DispatchModel($db);
+
+        try {
+            $resultats = $dispatch->dispatchProportionnel();
+
+            return [
+                "success" => true,
+                "message" => "Dispatch proportionnel effectué avec succès",
+                "dons_traites" => count($resultats),
+                "details" => $resultats
+            ];
+        } catch (Throwable $e) {
             return [
                 "success" => false,
                 "message" => $e->getMessage()
