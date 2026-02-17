@@ -123,9 +123,9 @@
             <?php foreach ($dons as $don): ?>
                 <tr>
                     <td><?= htmlspecialchars($don['donateur_nom']) ?></td>
-                    <td><?= htmlspecialchars($don['date_saisie']) ?></td>
                     <td><?= htmlspecialchars($don['article']) ?></td>
                     <td><?= htmlspecialchars($don['quantite']) ?></td>
+                    <td><?= htmlspecialchars($don['date_saisie']) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
