@@ -15,7 +15,6 @@ class ArticleController {
     // Afficher tous les articles
     // ======================
     public function getAllArticles() {
-        
         return $this->articleModel->getAllProduits();
     }
     public function getArticleById($id) {
@@ -33,4 +32,8 @@ class ArticleController {
     public function deleteArticle($id) {
         return $this->articleModel->deleteProduit($id);
     }   
+
+    public function getAllArticlesToBuy() {
+        return $this->articleModel->getAllProduitsToBuy();
+    }
 }

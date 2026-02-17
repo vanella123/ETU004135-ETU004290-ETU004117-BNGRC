@@ -161,7 +161,7 @@ Flight::route('GET|POST /achats', function(){
         }
     }
 
-    $articles = $articleController->getAllArticles();
+    $articles = $articleController->getAllArticlesToBuy();
     $villes = $villeController->getAllVilles();
 
     $ville_filter = $_GET['ville_filter'] ?? null;
