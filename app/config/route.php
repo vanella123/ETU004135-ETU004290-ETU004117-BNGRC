@@ -51,10 +51,14 @@ Flight::route('GET /', function () {
     $donsResp = $controller->getDonsNonRepartis();
     $donsNonRepartis = isset($donsResp['success']) && $donsResp['success'] ? $donsResp['data'] : [];
 
+    $totalDonsResp = $controller->getTotalDons();
+    $totalDons = isset($totalDonsResp['success']) && $totalDonsResp['success'] ? $totalDonsResp['data'] : 0;
+
     Flight::render('model.php', [
         'dashboard' => $data,
         'totals'    => $totals,
         'donsNonRepartis' => $donsNonRepartis,
+        'totalDons' => $totalDons,
         'content'   => $content,
         'title'     => 'Tableau de Bord'
     ]);
@@ -92,6 +96,9 @@ Flight::route('POST /simulate', function(){
     $totals = isset($totalsResp['success']) && $totalsResp['success'] ? $totalsResp['data'] : [];
     $donsResp = $controller->getDonsNonRepartis();
     $donsNonRepartis = isset($donsResp['success']) && $donsResp['success'] ? $donsResp['data'] : [];
+
+    $totalDonsResp = $controller->getTotalDons();
+    $totalDons = isset($totalDonsResp['success']) && $totalDonsResp['success'] ? $totalDonsResp['data'] : 0;
     
     $simForView = $simulationResult['success'] ? $simulationResult['simulation'] : null;
 
@@ -101,13 +108,16 @@ Flight::route('POST /simulate', function(){
         $showSimulation = true;
     }
 
-    Flight::render('dashbord', [
+    Flight::render('model.php', [
         'dashboard' => $data,
         'totals'    => $totals,
         'donsNonRepartis' => $donsNonRepartis,
+        'totalDons' => $totalDons,
         'simulation' => $simForView,
         'showSimulation' => $showSimulation,
-        'modeDispatch' => $mode
+        'modeDispatch' => $mode,
+        'content'   => 'dashbord.php',
+        'title'     => 'Simulation - Tableau de Bord'
     ]);
 });
 
@@ -252,12 +262,15 @@ Flight::route('POST /repartir', function(){
 
     $totals = $dashboardModel->getTotals();
 
-    Flight::render('dashbord', [
+    Flight::render('model.php', [
         'dashboard' => $data,
         'totals'    => $totals,
         'donsNonRepartis' => $dashboardModel->getDonsNonRepartis(),
+        'totalDons' => $dashboardModel->getTotalDons(),
         'message' => $result['success']
             ? ['type'=>'success','text'=>'Répartition effectuée avec succès.']
-            : ['type'=>'danger','text'=>'Erreur lors de la répartition.']
+            : ['type'=>'danger','text'=>'Erreur lors de la répartition.'],
+        'content'   => 'dashbord.php',
+        'title'     => 'Tableau de Bord'
     ]);
 });

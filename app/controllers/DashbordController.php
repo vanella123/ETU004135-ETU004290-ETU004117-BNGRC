@@ -85,6 +85,17 @@ class DashbordController {
         }
     }
 
+    public function getTotalDons(){
+        $db = Flight::db();
+        $dashboard = new DashboardModel($db);
+
+        try {
+            return [ 'success' => true, 'data' => $dashboard->getTotalDons() ];
+        } catch (Throwable $e) {
+            return [ 'success' => false, 'data' => 0 ];
+        }
+    }
+
     public function viewDashboard(){
 
     $db = Flight::db();

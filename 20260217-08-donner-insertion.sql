@@ -36,7 +36,7 @@ INSERT INTO article (nom, type_besoin_id, prix_unitaire) VALUES
 INSERT INTO configuration (id, frais_achat) VALUES
 (1, 5.00);
 
-ALTER TABLE besoin ADD COLUMN ordre INT DEFAULT 1;
+
 
 INSERT INTO besoin (ville_id, article_id, quantite, date_saisie, ordre) VALUES
 

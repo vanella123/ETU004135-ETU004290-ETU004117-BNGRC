@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tableau de Bord - Besoins et Dons</title>
-    <style>
+<style>
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f9;
@@ -174,8 +170,6 @@
         }
 
     </style>
-</head>
-<body>
 
 <h1>Tableau de Bord : Besoins et Dons par Ville</h1>
 
@@ -259,6 +253,7 @@ $totals = $totals ?? [
 
 <!-- Dons non encore répartis -->
 <?php $donsNonRepartis = $donsNonRepartis ?? []; ?>
+<?php $totalDons = $totalDons ?? 0; ?>
 <?php if (!empty($donsNonRepartis)): ?>
 <div class="dons-card">
     <h2>🎁 Dons non encore répartis (<?= count($donsNonRepartis) ?>)</h2>
@@ -283,9 +278,14 @@ $totals = $totals ?? [
         <?php endforeach; ?>
     </table>
 </div>
-<?php else: ?>
+<?php elseif ($totalDons > 0): ?>
 <div class="dons-card" style="text-align:center; border-left-color: #27ae60;">
     <h2 style="color:#27ae60;">✅ Tous les dons ont été entièrement répartis</h2>
+</div>
+<?php else: ?>
+<div class="dons-card" style="text-align:center; border-left-color: #e67e22;">
+    <h2 style="color:#e67e22;">⚠️ Aucun don enregistré</h2>
+    <p>Ajoutez des dons via le formulaire <a href="/form_dons">Saisie Don</a> pour pouvoir effectuer un dispatch.</p>
 </div>
 <?php endif; ?>
 
@@ -380,6 +380,3 @@ foreach ($dashboard as $row):
 </table>
 </div>
 <?php endif; ?>
-
-</body>
-</html>

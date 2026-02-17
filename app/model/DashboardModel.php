@@ -128,7 +128,7 @@ class DashboardModel {
                 d.donateur_nom AS donateur,
                 d.quantite AS quantite_totale,
                 IFNULL(SUM(r.quantite_repartie), 0) AS quantite_repartie,
-                (d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS reste
+                GREATEST(0, d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS reste
             FROM don d
             JOIN article a ON d.article_id = a.id
             LEFT JOIN repartition_don r ON d.id = r.don_id
@@ -137,6 +137,14 @@ class DashboardModel {
             ORDER BY d.date_saisie ASC
         ";
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Compte le nombre total de dons dans la base
+     */
+    public function getTotalDons(){
+        $sql = "SELECT COUNT(*) FROM don";
+        return (int) $this->db->query($sql)->fetchColumn();
     }
 
     /**

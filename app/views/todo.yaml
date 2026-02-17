@@ -1,0 +1,11 @@
+======== sasie de besoin ============
+ Formualire pour entrer le besoin : 
+      - liste deroulante ville 
+      - liste deroulante de produit
+      - qauntite 
+      - date de livraison
+      - bouton de validation
+
+Route : /saiseBesoin 
+    - getAllVille 
+    - getAllProduit
