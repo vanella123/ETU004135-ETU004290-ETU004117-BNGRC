@@ -232,3 +232,28 @@ Flight::route('GET|POST /achats', function(){
 
     Flight::render('model.php', compact('articles','villes','achats','message','content') + ['title'=>'Achats']);
 });
+
+// Répartition réelle des dons (ordre croissant des besoins)
+Flight::route('POST /repartir', function(){
+
+    $dispatchController = new DonCController();
+    $result = $dispatchController->repartirDonsParOdreCroissanr();
+
+    $controller = new DashbordController();
+    $bord = $controller->getbord();
+    $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
+
+    $db = Flight::db();
+    $dashboardModel = new \app\model\DashboardModel($db);
+
+    $totals = $dashboardModel->getTotals();
+
+    Flight::render('dashbord', [
+        'dashboard' => $data,
+        'totals'    => $totals,
+        'donsNonRepartis' => $dashboardModel->getDonsNonRepartis(),
+        'message' => $result['success']
+            ? ['type'=>'success','text'=>'Répartition effectuée avec succès.']
+            : ['type'=>'danger','text'=>'Erreur lors de la répartition.']
+    ]);
+});
