@@ -315,31 +315,30 @@ class DispatchModel {
                 return "Total des besoins restants = 0";
             }
 
-            // Calcul proportionnel
+            // Calcul proportionnel (troncature sans arrondi)
             $repartitions = [];
             $totalDistribue = 0;
-            foreach ($besoins as $b) {
-                $part = floor(($b['reste'] / $totalBesoins) * $resteDon);
+            foreach ($besoins as $index => $b) {
+                $partExacte = ($b['reste'] / $totalBesoins) * $resteDon;
+                $part = floor($partExacte);
                 $repartitions[] = [
                     'besoin_id' => $b['id'],
-                    'quantite' => $part
+                    'quantite' => $part,
+                    'decimale' => $partExacte - $part  // partie après la virgule
                 ];
                 $totalDistribue += $part;
             }
 
-            // Gestion du reste (arrondi) — distribué aux plus gros besoins
+            // Distribuer le reste à ceux qui ont la plus grande partie décimale
             $reste = $resteDon - $totalDistribue;
-            usort($besoins, function($a, $b) { return $b['reste'] - $a['reste']; });
-            $i = 0;
-            while ($reste > 0) {
-                foreach ($repartitions as &$rep) {
-                    if ($rep['besoin_id'] == $besoins[$i]['id']) {
-                        $rep['quantite'] += 1;
-                        $reste--;
-                        break;
-                    }
+            if ($reste > 0) {
+                // Trier par partie décimale décroissante
+                usort($repartitions, function($a, $b) {
+                    return $b['decimale'] <=> $a['decimale'];
+                });
+                for ($i = 0; $i < $reste && $i < count($repartitions); $i++) {
+                    $repartitions[$i]['quantite'] += 1;
                 }
-                $i = ($i + 1) % count($besoins);
             }
 
             // Insertion en base
@@ -396,30 +395,29 @@ class DispatchModel {
 
             $repartitionsDon = [];
             if ($totalBesoins > 0) {
+                // Calcul proportionnel (troncature sans arrondi)
                 $totalDistribue = 0;
                 foreach ($besoinsActifs as $b) {
-                    $part = floor(($b['reste_simule'] / $totalBesoins) * $resteDon);
+                    $partExacte = ($b['reste_simule'] / $totalBesoins) * $resteDon;
+                    $part = floor($partExacte);
                     $repartitionsDon[] = [
                         'besoin_id' => $b['id'],
                         'ville' => $b['ville'] ?? 'N/A',
-                        'quantite' => $part
+                        'quantite' => $part,
+                        'decimale' => $partExacte - $part  // partie après la virgule
                     ];
                     $totalDistribue += $part;
                 }
 
-                // Reste d'arrondi
+                // Distribuer le reste à ceux qui ont la plus grande partie décimale
                 $reste = $resteDon - $totalDistribue;
-                usort($besoinsActifs, function($a, $b) { return $b['reste_simule'] - $a['reste_simule']; });
-                $i = 0;
-                while ($reste > 0) {
-                    foreach ($repartitionsDon as &$rep) {
-                        if ($rep['besoin_id'] == $besoinsActifs[$i]['id']) {
-                            $rep['quantite'] += 1;
-                            $reste--;
-                            break;
-                        }
+                if ($reste > 0) {
+                    usort($repartitionsDon, function($a, $b) {
+                        return $b['decimale'] <=> $a['decimale'];
+                    });
+                    for ($i = 0; $i < $reste && $i < count($repartitionsDon); $i++) {
+                        $repartitionsDon[$i]['quantite'] += 1;
                     }
-                    $i = ($i + 1) % count($besoinsActifs);
                 }
 
                 // Mettre à jour les restes simulés
