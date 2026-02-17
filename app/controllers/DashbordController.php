@@ -51,6 +51,40 @@ class DashbordController {
         }
     }
 
+    public function getTotals(){
+        $db = Flight::db();
+        $dashboard = new DashboardModel($db);
+
+        try {
+            return [ 'success' => true, 'data' => $dashboard->getTotals() ];
+        } catch (Throwable $e) {
+            return [ 'success' => false, 'message' => $e->getMessage() ];
+        }
+    }
+
+    public function getDonsNonRepartis(){
+        $db = Flight::db();
+        $dashboard = new DashboardModel($db);
+
+        try {
+            return [ 'success' => true, 'data' => $dashboard->getDonsNonRepartis() ];
+        } catch (Throwable $e) {
+            return [ 'success' => false, 'message' => $e->getMessage() ];
+        }
+    }
+
+    public function resetRepartitions(){
+        $db = Flight::db();
+        $dashboard = new DashboardModel($db);
+
+        try {
+            $dashboard->resetRepartitions();
+            return [ 'success' => true, 'message' => 'Répartitions supprimées' ];
+        } catch (Throwable $e) {
+            return [ 'success' => false, 'message' => $e->getMessage() ];
+        }
+    }
+
     public function viewDashboard(){
 
     $db = Flight::db();

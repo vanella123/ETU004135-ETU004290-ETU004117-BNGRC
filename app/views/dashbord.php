@@ -203,7 +203,7 @@ $totals = $totals ?? [
 <!-- Boutons -->
 <div class="top-bar">
     <form method="POST" action="recharger" style="display: inline;">
-        <button type="submit" class="btn btn-reload" onclick="return confirm('⚠️ Attention ! Cela va SUPPRIMER toutes les répartitions et remettre tous les dons comme non répartis. Continuer ?')">🔄 Recharger (RAZ répartitions)</button>
+        <button type="submit" class="btn btn-reload" onclick="return confirm('⚠️ Attention ! Cela va SUPPRIMER toutes les répartitions et remettre tous les dons comme non répartis. Continuer ?')">🔄 Recharger</button>
     </form>
     <form method="POST" action="simulate" style="display: inline;">
         <button type="submit" class="btn btn-simulate">📋 Simuler</button>

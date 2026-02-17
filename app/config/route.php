@@ -42,14 +42,14 @@ Flight::route('GET /', function () {
     $bord = $controller->getbord();
     $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
 
-    // Récupère aussi les totaux et les passe à la vue
-    $db = Flight::db();
-    $dashboardModel = new \app\model\DashboardModel($db);
-    $totals = $dashboardModel->getTotals();
+    // Récupère aussi les totaux et les passe à la vue (via DashbordController)
+    $totalsResp = $controller->getTotals();
+    $totals = isset($totalsResp['success']) && $totalsResp['success'] ? $totalsResp['data'] : [];
 
     $content = 'dashbord.php';
 
-    $donsNonRepartis = $dashboardModel->getDonsNonRepartis();
+    $donsResp = $controller->getDonsNonRepartis();
+    $donsNonRepartis = isset($donsResp['success']) && $donsResp['success'] ? $donsResp['data'] : [];
 
     Flight::render('model.php', [
         'dashboard' => $data,
@@ -62,9 +62,8 @@ Flight::route('GET /', function () {
 
 // Recharger : supprime toutes les répartitions et remet tout à zéro
 Flight::route('POST /recharger', function(){
-    $db = Flight::db();
-    $dashboardModel = new \app\model\DashboardModel($db);
-    $dashboardModel->resetRepartitions();
+    $controller = new DashbordController();
+    $controller->resetRepartitions();
     Flight::redirect('/');
 });
 
@@ -79,10 +78,11 @@ Flight::route('POST /simulate', function(){
     $dispatchController = new DispatchController();
     $simulationResult = $dispatchController->simuler();
 
-    // Récupère aussi les totaux pour l'affichage en simulation
-    $db = Flight::db();
-    $dashboardModel = new \app\model\DashboardModel($db);
-    $totals = $dashboardModel->getTotals();
+    // Récupère aussi les totaux pour l'affichage en simulation via le controller
+    $totalsResp = $controller->getTotals();
+    $totals = isset($totalsResp['success']) && $totalsResp['success'] ? $totalsResp['data'] : [];
+    $donsResp = $controller->getDonsNonRepartis();
+    $donsNonRepartis = isset($donsResp['success']) && $donsResp['success'] ? $donsResp['data'] : [];
     
     $simForView = $simulationResult['success'] ? $simulationResult['simulation'] : null;
 
@@ -95,7 +95,7 @@ Flight::route('POST /simulate', function(){
     Flight::render('dashbord', [
         'dashboard' => $data,
         'totals'    => $totals,
-        'donsNonRepartis' => $dashboardModel->getDonsNonRepartis(),
+        'donsNonRepartis' => $donsNonRepartis,
         'simulation' => $simForView,
         'showSimulation' => $showSimulation
     ]);
@@ -106,22 +106,7 @@ Flight::route('GET /simulation', function(){
     Flight::render('simulation', ['simulation' => null, 'title' => 'Simulation']);
 });
 
-Flight::route('POST /simulation/preview', function(){
-    $dispatchController = new DispatchController();
-    $simulationResult = $dispatchController->simuler();
 
-    // `simulation.php` attend une liste de dons -> fournir `dons` si présent
-    $simulationForView = [];
-    if ($simulationResult['success']) {
-        $sim = $simulationResult['simulation'];
-        $simulationForView = $sim['dons'] ?? $sim;
-    }
-
-    Flight::render('simulation', [
-        'simulation' => $simulationForView,
-        'title' => 'Simulation — Aperçu'
-    ]);
-});
 
 // Bouton Dispatch : lance le dispatch global puis redirige vers le dashboard
 Flight::route('POST /dispatch', function(){
