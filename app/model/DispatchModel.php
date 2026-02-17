@@ -187,7 +187,7 @@ class DispatchModel {
             LEFT JOIN statut s ON b.statut_id = s.id_statut
             LEFT JOIN repartition_don r ON b.id = r.besoin_id
             GROUP BY b.id
-            ORDER BY v.nom ASC, a.nom ASC, b.id ASC
+            ORDER BY v.nom ASC, a.nom ASC, b.date_saisie ASC, b.ordre ASC, b.id ASC
         ";
         
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -277,7 +277,7 @@ class DispatchModel {
             WHERE b.article_id = ?
             GROUP BY b.id
             HAVING reste > 0
-            ORDER BY b.date_saisie ASC
+            ORDER BY b.date_saisie ASC, b.ordre ASC, b.id ASC
         ";
 
         $stmt = $this->db->prepare($sql);
