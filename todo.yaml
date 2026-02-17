@@ -98,3 +98,13 @@ CREATE TABLE repartition_don (
     FOREIGN KEY (don_id) REFERENCES don(id) ON DELETE CASCADE,
     FOREIGN KEY (besoin_id) REFERENCES besoin(id) ON DELETE CASCADE
 );
+
+
+dropdown : 
+    - repartion par priorisation des demandes (date)
+    - repartir par ordre croissant de quantite 
+    - repation proportionnelle a la quantite de besoin
+
+Route : 
+    - POST /simulate
+    - 

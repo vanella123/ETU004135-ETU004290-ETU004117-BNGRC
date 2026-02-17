@@ -219,3 +219,7 @@ Flight::route('GET|POST /achats', function(){
 
     Flight::render('model.php', compact('articles','villes','achats','message','content') + ['title'=>'Achats']);
 });
+
+
+
+
