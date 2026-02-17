@@ -62,7 +62,7 @@
         }
 
         input[type="submit"] {
-            background-color: #4CAF50;
+            background-color: #5f5bd5;
             color: white;
             border: none;
             cursor: pointer;
@@ -71,13 +71,15 @@
         }
 
         input[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: #7f8bac;
         }
 
         option {
             padding: 5px;
         }
     </style>
+    <link rel="stylesheet" href="/css/style.css">
+
 </head>
 
 <body>

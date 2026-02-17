@@ -1,17 +1,20 @@
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">Dons & Besoins</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="/saisieBesoin">Saisie Besoin</a></li>
-                <li class="nav-item"><a class="nav-link" href="/form_dons">Saisie Don</a></li>
-                <li class="nav-item"><a class="nav-link" href="/recap">Besoins Totaux</a></li>
-                <li class="nav-item"><a class="nav-link" href="/achats">Achats</a></li>
-            </ul>
+
+<header class="main-navbar">
+    <div class="nav-container">
+        <div class="logo">
+            💙 Gestion Dons
+        </div>
+
+        <nav class="nav-links">
+            <a class="nav-link" href="/">Dashboard</a>
+            <a class="nav-link" href="/saisieBesoin">Saisie Besoin</a>
+            <a class="nav-link" href="/form_dons">Saisie Don</a>
+            <a class="nav-link" href="/recap">Besoins Totaux</a>
+            <a class="nav-link" href="/achats">Achats</a>
+        </nav>
+
+        <div class="user-area">
+            <span>👤 Admin</span>
         </div>
     </div>
-</nav>
+</header>
