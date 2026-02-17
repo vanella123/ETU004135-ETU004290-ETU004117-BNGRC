@@ -24,7 +24,6 @@ page simulation.php :  simuler + anuller + valider (ok)
     Ajout de la simulation (simuler sans INSERT), affichage détaillé des répartitions prévues et prévision d'état des besoins."
 
 
-
 version 3: RÉALISATIONS 
 
 1) Dashboard (UI + backend)

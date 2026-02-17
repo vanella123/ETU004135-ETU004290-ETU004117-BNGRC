@@ -25,7 +25,7 @@ class DashboardModel {
                 b.id AS besoin_id,
                 b.quantite AS quantite_demandee,
                 IFNULL(SUM(r.quantite_repartie), 0) AS quantite_attribuee,
-                (b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS quantite_restante,
+                GREATEST(0, b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS quantite_restante,
                 s.libelle AS statut,
                 s.id_statut
             FROM besoin b
@@ -48,7 +48,7 @@ class DashboardModel {
                 v.nom AS ville,
                 SUM(b.quantite) AS total_demandee,
                 IFNULL(SUM(r.quantite_repartie), 0) AS total_attribuee,
-                (SUM(b.quantite) - IFNULL(SUM(r.quantite_repartie), 0)) AS total_restante
+                GREATEST(0, SUM(b.quantite) - IFNULL(SUM(r.quantite_repartie), 0)) AS total_restante
             FROM besoin b
             JOIN ville v ON b.ville_id = v.id
             LEFT JOIN repartition_don r ON b.id = r.besoin_id
@@ -103,7 +103,7 @@ class DashboardModel {
                 SUM(CASE WHEN b.statut_id = 1 THEN 1 ELSE 0 END) AS total_en_attente,
                 SUM(b.quantite) AS total_quantite_demandee,
                 IFNULL(SUM(r.quantite_repartie), 0) AS total_quantite_attribuee,
-                (SUM(b.quantite) - IFNULL(SUM(r.quantite_repartie), 0)) AS total_quantite_restante
+                GREATEST(0, SUM(b.quantite) - IFNULL(SUM(r.quantite_repartie), 0)) AS total_quantite_restante
             FROM besoin b
             JOIN ville v ON b.ville_id = v.id
             LEFT JOIN repartition_don r ON b.id = r.besoin_id

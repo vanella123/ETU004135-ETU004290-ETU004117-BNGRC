@@ -47,10 +47,38 @@ class DispatchModel {
         $donsNonRepartis = $this->getDonsAvecReste();
         $repartitionsSimulees = [];
         $donsSimules = [];
+
+        // Copie locale des restes de besoins pour simulation successive
+        // (évite la double allocation quand plusieurs dons couvrent le même article)
+        $restesBesoins = [];
+        foreach ($tousLesBesoins as $b) {
+            $restesBesoins[$b['id']] = max(0, $b['quantite_restante']);
+        }
         
         foreach ($donsNonRepartis as $don) {
-            // simulation par don
-            $repartitions = $this->simulerDispatchDon($don);
+            $resteDon = $don['reste'];
+            $besoins = $this->getBesoinsNonSatisfaits($don['article_id']);
+            $repartitions = [];
+
+            foreach ($besoins as $besoin) {
+                if ($resteDon <= 0) break;
+
+                // Utiliser le reste simulé au lieu du reste DB
+                $resteSimule = $restesBesoins[$besoin['id']] ?? $besoin['reste'];
+                if ($resteSimule <= 0) continue;
+
+                $quantiteARepartir = min($resteDon, $resteSimule);
+
+                $repartitions[] = [
+                    'besoin_id' => $besoin['id'],
+                    'ville' => $besoin['ville'] ?? 'N/A',
+                    'quantite' => $quantiteARepartir
+                ];
+
+                $resteDon -= $quantiteARepartir;
+                // Mettre à jour le reste simulé
+                $restesBesoins[$besoin['id']] = max(0, $resteSimule - $quantiteARepartir);
+            }
 
             // conserver la structure attendue par la vue `simulation.php`
             $donsSimules[] = [
@@ -128,7 +156,7 @@ class DispatchModel {
 
         $sql = "
             SELECT d.id, d.article_id,
-                   (d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS reste
+                   GREATEST(0, d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS reste
             FROM don d
             LEFT JOIN repartition_don r ON d.id = r.don_id
             GROUP BY d.id
@@ -151,7 +179,7 @@ class DispatchModel {
                 v.nom AS ville,
                 a.nom AS article,
                 IFNULL(SUM(r.quantite_repartie), 0) AS quantite_attribuee,
-                (b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS quantite_restante,
+                GREATEST(0, b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS quantite_restante,
                 s.libelle AS statut_actuel
             FROM besoin b
             JOIN ville v ON b.ville_id = v.id
@@ -224,8 +252,8 @@ class DispatchModel {
     private function getResteDon($don_id){
 
         $sql = "
-            SELECT d.quantite -
-            IFNULL(SUM(r.quantite_repartie),0) AS reste
+            SELECT GREATEST(0, d.quantite -
+            IFNULL(SUM(r.quantite_repartie),0)) AS reste
             FROM don d
             LEFT JOIN repartition_don r ON d.id = r.don_id
             WHERE d.id = ?
@@ -242,7 +270,7 @@ class DispatchModel {
 
         $sql = "
             SELECT b.*, v.nom as ville,
-            (b.quantite - IFNULL(SUM(r.quantite_repartie),0)) AS reste
+            GREATEST(0, b.quantite - IFNULL(SUM(r.quantite_repartie),0)) AS reste
             FROM besoin b
             LEFT JOIN repartition_don r ON b.id = r.besoin_id
             LEFT JOIN ville v ON b.ville_id = v.id
@@ -550,7 +578,7 @@ class DispatchModel {
                 b.id,
                 b.article_id,
                 v.nom AS ville,
-                (b.quantite - COALESCE(SUM(r.quantite_repartie),0)) AS reste
+                GREATEST(0, b.quantite - COALESCE(SUM(r.quantite_repartie),0)) AS reste
             FROM besoin b
             LEFT JOIN repartition_don r ON b.id = r.besoin_id
             LEFT JOIN ville v ON b.ville_id = v.id

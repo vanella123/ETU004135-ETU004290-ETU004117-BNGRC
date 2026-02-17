@@ -7,7 +7,7 @@ SELECT
     b.id AS besoin_id,
     b.quantite AS quantite_demandee,
     IFNULL(SUM(r.quantite_repartie), 0) AS quantite_attribuee,
-    (b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS quantite_restante
+    GREATEST(0, b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS quantite_restante
 FROM besoin b
 JOIN ville v ON b.ville_id = v.id
 JOIN article a ON b.article_id = a.id

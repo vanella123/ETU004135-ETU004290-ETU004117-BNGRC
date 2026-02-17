@@ -37,9 +37,9 @@ SELECT
     a.nom AS Article,
     b.quantite AS Demandé,
     IFNULL(SUM(r.quantite_repartie), 0) AS Attribué,
-    (b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS Restant,
+    GREATEST(0, b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS Restant,
     CASE 
-        WHEN (b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) = 0 THEN '✅ Satisfait'
+        WHEN GREATEST(0, b.quantite - IFNULL(SUM(r.quantite_repartie), 0)) = 0 THEN '✅ Satisfait'
         WHEN IFNULL(SUM(r.quantite_repartie), 0) > 0 THEN '⚠️ Partiel'
         ELSE '❌ Non satisfait'
     END AS Statut
@@ -60,9 +60,9 @@ SELECT
     a.nom AS Article,
     d.quantite AS Quantité,
     IFNULL(SUM(r.quantite_repartie), 0) AS Distribué,
-    (d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS Reste,
+    GREATEST(0, d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS Reste,
     CASE 
-        WHEN (d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) = 0 THEN '✅ Totalement distribué'
+        WHEN GREATEST(0, d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) = 0 THEN '✅ Totalement distribué'
         WHEN IFNULL(SUM(r.quantite_repartie), 0) > 0 THEN '⚠️ Partiellement distribué'
         ELSE '❌ Non distribué'
     END AS Statut
