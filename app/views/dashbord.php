@@ -214,17 +214,17 @@ $totals = $totals ?? [
     </div>
 
     <div class="summary-card">
-        <div class="summary-label">Quantité demandée</div>
+        <div class="summary-label">Quantité demandée des besoins</div>
         <div class="summary-value"><?= (int)$totals['total_quantite_demandee'] ?></div>
     </div>
 
     <div class="summary-card">
-        <div class="summary-label">Quantité attribuée</div>
+        <div class="summary-label">Quantité attribuée des besoins</div>
         <div class="summary-value"><?= (int)$totals['total_quantite_attribuee'] ?></div>
     </div>
 
     <div class="summary-card">
-        <div class="summary-label">Quantité restante</div>
+        <div class="summary-label">Quantité restante des besoins </div>
         <div class="summary-value"><?= (int)$totals['total_quantite_restante'] ?></div>
     </div>
 </div>
