@@ -138,4 +138,52 @@ class DispatchController {
             ];
         }
     }
+
+    /**
+     * Simuler le dispatch par ordre croissant des besoins
+     */
+    public function simulerOrdreCroissant(){
+
+        $db = Flight::db();
+        $dispatch = new DispatchModel($db);
+
+        try {
+            $simulation = $dispatch->simulerDispatchOrdreCroissant();
+
+            return [
+                "success" => true,
+                "message" => "Simulation par ordre croissant effectuée avec succès",
+                "simulation" => $simulation
+            ];
+        } catch (Throwable $e) {
+            return [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Dispatcher par ordre croissant des besoins (plus petits d'abord)
+     */
+    public function dispatchOrdreCroissant(){
+
+        $db = Flight::db();
+        $dispatch = new DispatchModel($db);
+
+        try {
+            $resultat = $dispatch->dispatchOrdreCroissant();
+
+            return [
+                "success" => true,
+                "message" => "Dispatch par ordre croissant effectué avec succès",
+                "data" => $resultat
+            ];
+        } catch (Throwable $e) {
+            return [
+                "success" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+    }
 }

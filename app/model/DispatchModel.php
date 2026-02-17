@@ -464,4 +464,179 @@ class DispatchModel {
             'dons' => $donsSimules
         ];
     }
+
+    // ========== DISPATCH PAR ORDRE CROISSANT ==========
+
+    /**
+     * Dispatch en priorisant les plus petits besoins d'abord (ordre croissant)
+     */
+    public function dispatchOrdreCroissant(){
+        $donsNonRepartis = $this->getDonsAvecReste();
+        $resultats = [];
+
+        // Exécution directe (pas don par don, mais globalement)
+        try {
+            $this->db->beginTransaction();
+
+            // 1️⃣ Besoins non satisfaits (tri croissant par reste)
+            $besoins = $this->db->query("
+                SELECT 
+                    b.id,
+                    b.article_id,
+                    b.quantite,
+                    COALESCE(SUM(r.quantite_repartie),0) AS deja_repartie,
+                    (b.quantite - COALESCE(SUM(r.quantite_repartie),0)) AS reste
+                FROM besoin b
+                LEFT JOIN repartition_don r ON b.id = r.besoin_id
+                GROUP BY b.id
+                HAVING reste > 0
+                ORDER BY reste ASC
+            ")->fetchAll(PDO::FETCH_ASSOC);
+
+            // 2️⃣ Dons non totalement affectés
+            $dons = $this->db->query("
+                SELECT 
+                    d.id,
+                    d.article_id,
+                    d.quantite,
+                    COALESCE(SUM(r.quantite_repartie),0) AS deja_repartie,
+                    (d.quantite - COALESCE(SUM(r.quantite_repartie),0)) AS reste
+                FROM don d
+                LEFT JOIN repartition_don r ON d.id = r.don_id
+                GROUP BY d.id
+                HAVING reste > 0
+                ORDER BY d.date_saisie ASC
+            ")->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($besoins as $besoin) {
+                $resteBesoin = $besoin['reste'];
+
+                foreach ($dons as &$don) {
+                    if ($don['article_id'] != $besoin['article_id']) continue;
+                    if ($don['reste'] <= 0) continue;
+                    if ($resteBesoin <= 0) break;
+
+                    $quantite = min($resteBesoin, $don['reste']);
+
+                    $stmt = $this->db->prepare("
+                        INSERT INTO repartition_don
+                        (don_id, besoin_id, quantite_repartie, date_repartition)
+                        VALUES (?, ?, ?, NOW())
+                    ");
+                    $stmt->execute([$don['id'], $besoin['id'], $quantite]);
+
+                    $don['reste'] -= $quantite;
+                    $resteBesoin -= $quantite;
+                }
+            }
+
+            $this->db->commit();
+            return ['success' => true, 'message' => 'Dispatch par ordre croissant terminé'];
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * SIMULE le dispatch par ordre croissant des besoins
+     */
+    public function simulerDispatchOrdreCroissant(){
+        $tousLesBesoins = $this->getTousLesBesoins();
+        $repartitionsSimulees = [];
+        $donsSimules = [];
+
+        // 1️⃣ Besoins triés par reste croissant
+        $besoins = $this->db->query("
+            SELECT 
+                b.id,
+                b.article_id,
+                v.nom AS ville,
+                (b.quantite - COALESCE(SUM(r.quantite_repartie),0)) AS reste
+            FROM besoin b
+            LEFT JOIN repartition_don r ON b.id = r.besoin_id
+            LEFT JOIN ville v ON b.ville_id = v.id
+            GROUP BY b.id
+            HAVING reste > 0
+            ORDER BY reste ASC
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        // 2️⃣ Dons avec reste
+        $dons = $this->getDonsAvecReste();
+        
+        // Copie locale pour simulation
+        $donsCopie = [];
+        foreach ($dons as $d) {
+            $donsCopie[] = [
+                'id' => $d['id'],
+                'article_id' => $d['article_id'],
+                'reste_simule' => $d['reste']
+            ];
+        }
+
+        foreach ($besoins as $besoin) {
+            $resteBesoin = $besoin['reste'];
+            $repartitionsBesoin = [];
+
+            foreach ($donsCopie as &$don) {
+                if ($don['article_id'] != $besoin['article_id']) continue;
+                if ($don['reste_simule'] <= 0) continue;
+                if ($resteBesoin <= 0) break;
+
+                $quantite = min($resteBesoin, $don['reste_simule']);
+
+                $repartitionsBesoin[] = [
+                    'don_id' => $don['id'],
+                    'besoin_id' => $besoin['id'],
+                    'quantite' => $quantite,
+                    'ville' => $besoin['ville']
+                ];
+
+                $don['reste_simule'] -= $quantite;
+                $resteBesoin -= $quantite;
+            }
+
+            $repartitionsSimulees = array_merge($repartitionsSimulees, $repartitionsBesoin);
+        }
+
+        // Construire les dons simulés
+        foreach ($dons as $d) {
+            $repartitionsDon = [];
+            foreach ($repartitionsSimulees as $r) {
+                if ($r['don_id'] == $d['id']) {
+                    $repartitionsDon[] = [
+                        'besoin_id' => $r['besoin_id'],
+                        'ville' => $r['ville'],
+                        'quantite' => $r['quantite']
+                    ];
+                }
+            }
+
+            $donsSimules[] = [
+                'don_id' => $d['id'],
+                'article_id' => $d['article_id'],
+                'reste' => $d['reste'],
+                'repartitions' => $repartitionsDon
+            ];
+        }
+
+        // Calculer l'état final pour chaque besoin
+        foreach ($tousLesBesoins as &$besoin) {
+            $ajoutSimule = 0;
+            foreach ($repartitionsSimulees as $rep) {
+                if ($rep['besoin_id'] == $besoin['id']) {
+                    $ajoutSimule += $rep['quantite'];
+                }
+            }
+            $besoin['ajout_simule'] = $ajoutSimule;
+            $besoin['nouveau_attribue'] = $besoin['quantite_attribuee'] + $ajoutSimule;
+            $besoin['nouveau_reste'] = max(0, $besoin['quantite_restante'] - $ajoutSimule);
+        }
+
+        return [
+            'besoins' => $tousLesBesoins,
+            'repartitions_simulees' => $repartitionsSimulees,
+            'dons' => $donsSimules
+        ];
+    }
 }

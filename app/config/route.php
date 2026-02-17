@@ -81,6 +81,8 @@ Flight::route('POST /simulate', function(){
     $dispatchController = new DispatchController();
     if ($mode === 'proportionnel') {
         $simulationResult = $dispatchController->simulerProportionnel();
+    } elseif ($mode === 'croissant') {
+        $simulationResult = $dispatchController->simulerOrdreCroissant();
     } else {
         $simulationResult = $dispatchController->simuler();
     }
@@ -122,6 +124,8 @@ Flight::route('POST /dispatch', function(){
     $controller = new DispatchController();
     if ($mode === 'proportionnel') {
         $controller->dispatchProportionnel();
+    } elseif ($mode === 'croissant') {
+        $controller->dispatchOrdreCroissant();
     } else {
         $controller->dispatchAll();
     }

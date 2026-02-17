@@ -72,6 +72,7 @@
             font-weight: bold;
         }
         .mode-tag.proportionnel { background: #e67e22; }
+        .mode-tag.croissant { background: #27ae60; }
 
         .ville-card {
             background: white;
@@ -235,6 +236,7 @@ $totals = $totals ?? [
     <select id="mode-select" onchange="document.querySelectorAll('.hidden-mode').forEach(e => e.value = this.value)">
         <option value="date" <?= $modeDispatch === 'date' ? 'selected' : '' ?>>📅 Par date (chronologique)</option>
         <option value="proportionnel" <?= $modeDispatch === 'proportionnel' ? 'selected' : '' ?>>⚖️ Par proportion</option>
+        <option value="croissant" <?= $modeDispatch === 'croissant' ? 'selected' : '' ?>>📈 Par ordre croissant des besoins</option>
     </select>
 </div>
 
@@ -291,8 +293,13 @@ $totals = $totals ?? [
 <?php if (isset($showSimulation) && $showSimulation): ?>
     <div class="info-simulation">
         ⚠️ Mode simulation 
-        <span class="mode-tag <?= ($modeDispatch ?? 'date') === 'proportionnel' ? 'proportionnel' : '' ?>">
-            <?= ($modeDispatch ?? 'date') === 'proportionnel' ? '⚖️ Proportionnel' : '📅 Par date' ?>
+        <span class="mode-tag <?= ($modeDispatch ?? 'date') === 'proportionnel' ? 'proportionnel' : (($modeDispatch ?? 'date') === 'croissant' ? 'croissant' : '') ?>">
+            <?php 
+                $mode = $modeDispatch ?? 'date';
+                if ($mode === 'proportionnel') echo '⚖️ Proportionnel';
+                elseif ($mode === 'croissant') echo '📈 Ordre croissant';
+                else echo '📅 Par date';
+            ?>
         </span>
         — Les lignes en <span style="background: #fff9c4; padding: 2px 6px;">jaune</span> montrent les nouvelles distributions 
     </div>
