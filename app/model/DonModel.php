@@ -67,9 +67,12 @@ class DonModel {
             FROM don d
             JOIN article a ON d.article_id = a.id
             JOIN type_besoin tb ON a.type_besoin_id = tb.id
-            WHERE tb.libelle = 'Argent'
-        ";
-        return $this->db->query($sql)->fetch(PDO::FETCH_ASSOC)['total_argent'];
+            WHERE tb.libelle = 'Argent'";
+        
+        $stmt = $this->db->query($sql);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['total_argent'];
     }
 
     // Retourne le total d'achats déjà réalisés

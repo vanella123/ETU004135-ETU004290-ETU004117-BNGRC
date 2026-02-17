@@ -21,6 +21,17 @@ class ArticleModel {
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Obtenir les produits materiaux (pas argent)
+    public function getAllProduitsToBuy() {
+        $sql = "SELECT a.id, a.nom, a.prix_unitaire, tb.libelle AS type_besoin 
+                FROM article a 
+                JOIN type_besoin tb ON a.type_besoin_id = tb.id 
+                WHERE tb.libelle != 'Argent' 
+                ORDER BY a.nom ASC";
+                
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // ======================
     // Obtenir un produit par ID
     // ======================
