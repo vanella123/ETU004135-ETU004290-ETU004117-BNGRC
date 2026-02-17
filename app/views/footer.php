@@ -5,9 +5,9 @@
     <div class="footer-section">
         <h4>Collaborateurs</h4>
         <ul>
-            <li>ETU Collaborateur 1</li>
-            <li>ETU Collaborateur 2</li>
-            <li>ETU Collaborateur 3</li>
+            <li>ETU 004135</li>
+            <li>ETU 004290</li>
+            <li>ETU 004117</li>
         </ul>
     </div>
 

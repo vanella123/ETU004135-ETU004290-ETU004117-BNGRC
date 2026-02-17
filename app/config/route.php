@@ -42,13 +42,30 @@ Flight::route('GET /', function () {
     $bord = $controller->getbord();
     $data = isset($bord['success']) && $bord['success'] ? $bord['data'] : [];
 
+    // Récupère aussi les totaux et les passe à la vue
+    $db = Flight::db();
+    $dashboardModel = new \app\model\DashboardModel($db);
+    $totals = $dashboardModel->getTotals();
+
     $content = 'dashbord.php';
+
+    $donsNonRepartis = $dashboardModel->getDonsNonRepartis();
 
     Flight::render('model.php', [
         'dashboard' => $data,
+        'totals'    => $totals,
+        'donsNonRepartis' => $donsNonRepartis,
         'content'   => $content,
         'title'     => 'Tableau de Bord'
     ]);
+});
+
+// Recharger : supprime toutes les répartitions et remet tout à zéro
+Flight::route('POST /recharger', function(){
+    $db = Flight::db();
+    $dashboardModel = new \app\model\DashboardModel($db);
+    $dashboardModel->resetRepartitions();
+    Flight::redirect('/');
 });
 
 
@@ -61,11 +78,48 @@ Flight::route('POST /simulate', function(){
     // Ajouter la simulation
     $dispatchController = new DispatchController();
     $simulationResult = $dispatchController->simuler();
+
+    // Récupère aussi les totaux pour l'affichage en simulation
+    $db = Flight::db();
+    $dashboardModel = new \app\model\DashboardModel($db);
+    $totals = $dashboardModel->getTotals();
     
+    $simForView = $simulationResult['success'] ? $simulationResult['simulation'] : null;
+
+    // n'affiche le mode "simulation" que s'il y a au moins une répartition simulée réelle
+    $showSimulation = false;
+    if ($simForView && !empty($simForView['repartitions_simulees'])) {
+        $showSimulation = true;
+    }
+
     Flight::render('dashbord', [
         'dashboard' => $data,
-        'simulation' => $simulationResult['success'] ? $simulationResult['simulation'] : null,
-        'showSimulation' => true
+        'totals'    => $totals,
+        'donsNonRepartis' => $dashboardModel->getDonsNonRepartis(),
+        'simulation' => $simForView,
+        'showSimulation' => $showSimulation
+    ]);
+});
+
+// Page de simulation (aperçu détaillé) — form POST -> /simulation/preview
+Flight::route('GET /simulation', function(){
+    Flight::render('simulation', ['simulation' => null, 'title' => 'Simulation']);
+});
+
+Flight::route('POST /simulation/preview', function(){
+    $dispatchController = new DispatchController();
+    $simulationResult = $dispatchController->simuler();
+
+    // `simulation.php` attend une liste de dons -> fournir `dons` si présent
+    $simulationForView = [];
+    if ($simulationResult['success']) {
+        $sim = $simulationResult['simulation'];
+        $simulationForView = $sim['dons'] ?? $sim;
+    }
+
+    Flight::render('simulation', [
+        'simulation' => $simulationForView,
+        'title' => 'Simulation — Aperçu'
     ]);
 });
 

@@ -57,10 +57,12 @@ class DashbordController {
     $DashboardModel = new DashboardModel($db);
 
     $data = $DashboardModel->getDashboardData();
+    $totals = $DashboardModel->getTotals();
 
     // Envoie les données à la vue
     Flight::render('dashboard', [
-        'dashboard' => $data
+        'dashboard' => $data,
+        'totals'    => $totals
     ]);
 }
 }

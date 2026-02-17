@@ -1,29 +1,44 @@
-✅ TO-DO / Checklist Projet Dispatch de Dons
-1️⃣ Base de données (MySQL)
+        PARTIE : MIRANTO 
 
-1-DispatchModel
-executerDispatch($don_id) ✅ répartit automatiquement les dons sur les besoins par date
-getResteDon()
-getBesoinsNonSatisfaits()
+1-DispatchModel / Controller (OK)
+dispatchTousLesDons() 
+simulerDispatch()
+simulerDispatchDon($don) 
+getDonsAvecReste()
+getTousLesBesoins()
+executerDispatch($don_id)
+getResteDon($don_id)
+getBesoinsNonSatisfaits($article_id)
 
-2-DashboardModel
+2-DashboardModel / Controller (OK)
 getDashboardData() → liste ville + besoins + dons attribués
 getTotalParVille() (option résumé total par ville)
+mettreAJourStatuts() : Calcul et mise à jour automatique des statuts
+    - met à jour statut_id en fonction des répartitions (En attente / En cours / Satisfait)
 
-3️⃣ Controllers (app/controllers)
-
-1-BesoinController
-getAllBesoin()
-addBesoin()
-
-2-DonController
-getAllDon()
-addDon() (peut appeler automatiquement dispatch pour distribuer le don)
-
-3-DispatchController
-executerDispatch($don_id)
+page dashbord.php : affichage ; (ok)
+page simulation.php :  simuler + anuller + valider (ok)
+    Simulation dans le dashboard (UI)
+    Intégration de la simulation sur la page / (ligne en jaune + badge + 3 boutons Simuler/Valider/Annuler).
+    Simulation de dispatch (preview) intégrée
+    Ajout de la simulation (simuler sans INSERT), affichage détaillé des répartitions prévues et prévision d'état des besoins."
 
 
+        PARTIE VANELLA :
+
+======== sasie de besoin ============
+ Formualire pour entrer le besoin : 
+      - liste deroulante ville 
+      - liste deroulante de produit
+      - qauntite 
+      - date de livraison
+      - bouton de validation
+
+Route : /saiseBesoin 
+    - getAllVille 
+    - getAllProduit
+
+========== recapitulation des besoins ============
 Version 2 : 
 ✅ 
 
@@ -45,4 +60,20 @@ Total : 3000€       | 2000€            | 1000€           |
 Bouton actualiser en ajax 
 
 
-Route : 
+
+======= model.php =======
+
+creation d'un model php avec footer et header de theme bleu avec nuance 
+comme les template je veux que ce soit moderne 
+
+et on integre une page dans une model mais pas le contraire 
+
+- les fonctionnalites jusqu'ici : 
+    tableau de bord pour faire la distribution des dons pour les besoins
+    formulaire de saisie de besoin
+    formualire de saisie de don
+    tableau pour voir les besoins totaux , satisfait et restant
+    achat de produit pour les besoins a partir des dons en argent 
+
+
+

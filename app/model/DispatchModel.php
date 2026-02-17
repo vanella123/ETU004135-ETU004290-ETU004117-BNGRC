@@ -46,9 +46,20 @@ class DispatchModel {
         // 2) Simuler les répartitions
         $donsNonRepartis = $this->getDonsAvecReste();
         $repartitionsSimulees = [];
+        $donsSimules = [];
         
         foreach ($donsNonRepartis as $don) {
+            // simulation par don
             $repartitions = $this->simulerDispatchDon($don);
+
+            // conserver la structure attendue par la vue `simulation.php`
+            $donsSimules[] = [
+                'don_id' => $don['id'],
+                'article_id' => $don['article_id'],
+                'reste' => $don['reste'],
+                'repartitions' => $repartitions
+            ];
+
             if (!empty($repartitions)) {
                 foreach ($repartitions as $rep) {
                     $repartitionsSimulees[] = [
@@ -78,7 +89,8 @@ class DispatchModel {
         
         return [
             'besoins' => $tousLesBesoins,
-            'repartitions_simulees' => $repartitionsSimulees
+            'repartitions_simulees' => $repartitionsSimulees,
+            'dons' => $donsSimules
         ];
     }
 

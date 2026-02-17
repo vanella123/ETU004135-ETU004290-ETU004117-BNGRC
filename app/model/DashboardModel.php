@@ -90,10 +90,65 @@ class DashboardModel {
         return $this->db->exec($sql);
     }
 
+    public function getTotals(){
+        // met à jour les statuts avant calcul
+        $this->mettreAJourStatuts();
+
+        $sql = "
+            SELECT
+                COUNT(DISTINCT v.id) AS total_villes,
+                COUNT(b.id) AS total_besoins,
+                SUM(CASE WHEN b.statut_id = 3 THEN 1 ELSE 0 END) AS total_satisfaits,
+                SUM(CASE WHEN b.statut_id = 2 THEN 1 ELSE 0 END) AS total_en_cours,
+                SUM(CASE WHEN b.statut_id = 1 THEN 1 ELSE 0 END) AS total_en_attente,
+                SUM(b.quantite) AS total_quantite_demandee,
+                IFNULL(SUM(r.quantite_repartie), 0) AS total_quantite_attribuee,
+                (SUM(b.quantite) - IFNULL(SUM(r.quantite_repartie), 0)) AS total_quantite_restante
+            FROM besoin b
+            JOIN ville v ON b.ville_id = v.id
+            LEFT JOIN repartition_don r ON b.id = r.besoin_id
+        ";
+
+        return $this->db->query($sql)->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getDashboardDatas(){
-
         $sql = "SELECT * FROM vue_dashboard ORDER BY ville ASC, article ASC";
-
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Retourne les dons qui ont encore de la quantité non répartie
+     */
+    public function getDonsNonRepartis(){
+        $sql = "
+            SELECT 
+                d.id,
+                a.nom AS article,
+                d.donateur_nom AS donateur,
+                d.quantite AS quantite_totale,
+                IFNULL(SUM(r.quantite_repartie), 0) AS quantite_repartie,
+                (d.quantite - IFNULL(SUM(r.quantite_repartie), 0)) AS reste
+            FROM don d
+            JOIN article a ON d.article_id = a.id
+            LEFT JOIN repartition_don r ON d.id = r.don_id
+            GROUP BY d.id
+            HAVING reste > 0
+            ORDER BY d.date_saisie ASC
+        ";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Supprime toutes les répartitions et remet les statuts à "En attente"
+     */
+    public function resetRepartitions(){
+        // 1) Supprimer toutes les lignes de repartition_don
+        $this->db->exec("DELETE FROM repartition_don");
+
+        // 2) Remettre tous les besoins en statut 1 (En attente)
+        $this->db->exec("UPDATE besoin SET statut_id = 1");
+
+        return true;
     }
 }

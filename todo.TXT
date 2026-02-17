@@ -1,0 +1,74 @@
+last_updated: 2026-02-16
+
+completed:
+  - id: 1
+    title: "Unifier les namespaces (app\\model)"
+    description: "Correction des namespaces dans tous les modèles et contrôleurs; suppression du dossier app/models obsolète."
+    files:
+      - app/model/*.php
+      - app/controllers/*.php
+    date: 2026-02-16
+
+  - id: 2
+    title: "Dispatch automatique des dons"
+    description: "Implémentation de dispatchTousLesDons() et appel automatique après insertion d'un don."
+    files:
+      - app/model/DispatchModel.php
+      - app/controllers/DonController.php
+      - app/controllers/DispatchController.php
+    date: 2026-02-16
+
+  - id: 3
+    title: "Dispatch global et exécution"
+    description: "Route et contrôleur pour dispatcher tous les dons non répartis."
+    files:
+      - app/config/route.php
+      - app/controllers/DispatchController.php
+    date: 2026-02-16
+
+  - id: 4
+    title: ""
+    description: "
+    files:
+      - app/model/DispatchModel.php
+      - app/controllers/DispatchController.php
+      - app/views/dashbord.php
+      - app/config/route.php
+    date: 2026-02-16
+
+  - id: 5
+    title: ""
+    description: ""
+    files:
+      - app/views/dashbord.php
+    date: 2026-02-16
+
+  - id: 6
+    title: "Table statut pour besoins"
+    description: "Ajout de la table 'statut', colonne statut_id sur 'besoin' et utilisation du libellé en UI."
+    files:
+      - 20260216-05-ajoutStatut.sql
+      - app/model/DashboardModel.php
+      - app/views/dashbord.php
+    date: 2026-02-16
+
+  - id: 7
+    title: ""
+    description: "."
+    files:
+      - app/model/DashboardModel.php
+    date: 2026-02-16
+
+ 
+
+
+
+
+ 
+
+
+
+  
+notes:
+  - "Toutes les modifications majeures ont été testées localement."
+  - "Pour publier les changements : git pull origin dev && git push origin dev."
