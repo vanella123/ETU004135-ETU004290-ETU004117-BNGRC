@@ -160,8 +160,16 @@ Flight::route('POST /saisie', function () {
     // 🔥 TRÈS IMPORTANT : redirection
     Flight::redirect('/saisieBesoin');
 });
-Flight::route('GET /recap',function(){
-    Flight::render('recap_besoin'); 
+Flight::route('GET /recap', function() {
+    // Ici tu peux préparer des données si besoin
+    // Par exemple récupérer le récapitulatif depuis le controller
+    $controller = new BesoinController();
+    $recap = $controller->getRecapBesoin(); // exemple, tu peux adapter selon ton code
+
+    $content = 'recap_besoin.php';
+
+    // On passe tout au modèle (layout)
+    Flight::render('model.php', compact('recap','content') + ['title' => 'Récapitulatif des besoins']);
 });
 
 Flight::route('GET /resumeBesoinsAjax', function () {

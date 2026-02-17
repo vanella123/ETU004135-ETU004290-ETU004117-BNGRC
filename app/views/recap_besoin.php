@@ -1,20 +1,19 @@
 <style>
-    /* Style général */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f6fa;
+/* Conteneur principal */
+.recap-container {
     padding: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Titre */
-h2 {
+.recap-container h2 {
     color: #2f3640;
     text-align: center;
     margin-bottom: 20px;
 }
 
 /* Tableau */
-table {
+.recap-container table {
     width: 80%;
     margin: 0 auto;
     border-collapse: collapse;
@@ -25,67 +24,48 @@ table {
 }
 
 /* Entêtes */
-th {
+.recap-container th {
     background-color: #0097e6;
     color: white;
     padding: 12px;
     text-align: center;
-    font-size: 16px;
 }
 
 /* Cellules */
-td {
+.recap-container td {
     padding: 12px;
     text-align: center;
     border-bottom: 1px solid #f1f2f6;
-    font-size: 15px;
 }
 
 /* Lignes impaires */
-tr:nth-child(even) {
+.recap-container tr:nth-child(even) {
     background-color: #f1f2f6;
 }
 
 /* Bouton */
-button {
+.recap-container button {
     display: block;
     margin: 20px auto;
     padding: 10px 25px;
-    font-size: 16px;
     font-weight: bold;
     color: white;
     background-color: #0097e6;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: 0.3s;
 }
 
-/* Hover bouton */
-button:hover {
+.recap-container button:hover {
     background-color: #0652dd;
-    transform: scale(1.05);
-}
-
-/* Responsive */
-@media screen and (max-width: 600px) {
-    table {
-        width: 100%;
-    }
-    th, td {
-        padding: 10px;
-        font-size: 14px;
-    }
-    button {
-        width: 80%;
-        font-size: 14px;
-    }
 }
 </style>
 
+<div class="recap-container">
+
 <h2>Récapitulatif des besoins</h2>
 
-<table border="1">
+<table>
     <tr>
         <th>Besoin Total</th>
         <th>Besoin Satisfait</th>
@@ -96,11 +76,10 @@ button:hover {
         <td id="satisfait">-</td>
         <td id="restant">-</td>
     </tr>
-</tabl e>
-
-<br>
+</table>
 
 <button onclick="actualiser()">Actualiser</button>
+</div>
 <script>
 function actualiser(){
     fetch('/resumeBesoinsAjax')
