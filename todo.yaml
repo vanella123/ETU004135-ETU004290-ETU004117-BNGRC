@@ -46,3 +46,55 @@ et on integre une page dans une model mais pas le contraire
     formualire de saisie de don
     tableau pour voir les besoins totaux , satisfait et restant
     achat de produit pour les besoins a partir des dons en argent 
+
+
+====== repartion de dons : c'est celui avec le plus petit besoin qui est satisfait en premier ==============
+But : faire la repartition des dons pour les besoins avec la quantite la plus petite en premier
+- on recupere les besoins qui ne sont pas encore satisfait
+- on recupere les dons qui ne sont pas encore affecté
+- on trie les besoins par ordre croissant de quantite group by produit 
+- on trie les dons qui sont pas dans le table repartition_don 
+- on compare les dons et les besoins s'il satisfait le besoin on l'affecte sinon on passe au besoin suivant 
+
+ select * from repartition_don ; 
++----+--------+-----------+-------------------+---------------------+
+| id | don_id | besoin_id | quantite_repartie | date_repartition    |
+
+si les besoins et les dons se correspondent on les ajoutes a repartition_don et on met a jour le statut du besoin 
+
+CREATE TABLE article (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL,
+    type_besoin_id INT NOT NULL,
+    prix_unitaire DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (type_besoin_id) REFERENCES type_besoin(id) ON DELETE CASCADE
+);
+
+CREATE TABLE besoin (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    ville_id INT NOT NULL,
+    article_id INT NOT NULL,
+    quantite INT NOT NULL,
+    date_saisie DATE NOT NULL,
+    FOREIGN KEY (ville_id) REFERENCES ville(id) ON DELETE CASCADE,
+    FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE
+);
+
+CREATE TABLE don (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    article_id INT NOT NULL,
+    quantite INT NOT NULL,
+    donateur_nom VARCHAR(255),
+    date_saisie DATE NOT NULL,
+    FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE
+);
+
+CREATE TABLE repartition_don (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    don_id INT NOT NULL,
+    besoin_id INT NOT NULL,
+    quantite_repartie INT NOT NULL,
+    date_repartition DATETIME NOT NULL,
+    FOREIGN KEY (don_id) REFERENCES don(id) ON DELETE CASCADE,
+    FOREIGN KEY (besoin_id) REFERENCES besoin(id) ON DELETE CASCADE
+);
