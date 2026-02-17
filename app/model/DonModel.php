@@ -81,4 +81,100 @@ class DonModel {
         return $this->db->query($sql)->fetch(PDO::FETCH_ASSOC)['total_achats'];
     }
 
+
+
+    public function repartirDonsParOdreCroissanr()
+    {
+        $db = Flight::db();
+
+        try {
+
+            $db->beginTransaction();
+
+            // 1️⃣ Récupérer besoins non satisfaits (plus petit d'abord)
+            $besoins = $db->query("
+                SELECT 
+                    b.id,
+                    b.article_id,
+                    b.quantite,
+                    COALESCE(SUM(r.quantite_repartie),0) AS deja_repartie,
+                    (b.quantite - COALESCE(SUM(r.quantite_repartie),0)) AS reste
+                FROM besoin b 
+                LEFT JOIN repartition_don r ON b.id = r.besoin_id
+                GROUP BY b.id 
+                HAVING reste > 0
+                ORDER BY reste ASC 
+            ")->fetchAll(PDO::FETCH_ASSOC);
+
+            // 2️⃣ Récupérer dons disponibles
+            $dons = $db->query("
+                SELECT 
+                    d.id,
+                    d.article_id,
+                    d.quantite,
+                    COALESCE(SUM(r.quantite_repartie),0) AS deja_repartie,
+                    (d.quantite - COALESCE(SUM(r.quantite_repartie),0)) AS reste
+                FROM don d
+                LEFT JOIN repartition_don r ON d.id = r.don_id
+                GROUP BY d.id
+                HAVING reste > 0 
+                ORDER BY d.date_saisie ASC
+            ")->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($besoins as $besoin) {
+
+                $resteBesoin = $besoin['reste'];
+
+                foreach ($dons as &$don) {
+
+                    if ($don['article_id'] != $besoin['article_id'])
+                        continue;
+
+                    if ($don['reste'] <= 0)
+                        continue;
+
+                    if ($resteBesoin <= 0)
+                        break;
+
+                    // quantité à affecter
+                    $quantiteAffectee = min($resteBesoin, $don['reste']);
+
+                    // insertion repartition
+                    $stmt = $db->prepare("
+                        INSERT INTO repartition_don
+                        (don_id, besoin_id, quantite_repartie, date_repartition)
+                        VALUES (?, ?, ?, NOW())
+                    ");
+
+                    $stmt->execute([
+                        $don['id'],
+                        $besoin['id'],
+                        $quantiteAffectee
+                    ]);
+
+                    // mise à jour des restes
+                    $don['reste'] -= $quantiteAffectee;
+                    $resteBesoin -= $quantiteAffectee;
+                }
+
+                // si totalement satisfait
+                if ($resteBesoin == 0) {
+                    $db->prepare("
+                        UPDATE besoin 
+                        SET statut='satisfait'
+                        WHERE id=?
+                    ")->execute([$besoin['id']]);
+                }
+            }
+
+            $db->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $db->rollBack();
+            return false;
+        }
+    }
+
+
 }

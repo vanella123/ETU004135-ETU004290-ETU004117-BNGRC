@@ -43,6 +43,12 @@ class DonController {
             return false;
         }
     }
+    public function repartirDonsParOdreCroissant()
+    {
+        $db = Flight::db();
+        $don = new DonModel($db);
+        $don->repartirDonsParOdreCroissanr();
+    }
 }
 
 
