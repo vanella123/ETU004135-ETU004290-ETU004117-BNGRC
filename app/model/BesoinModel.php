@@ -37,15 +37,25 @@ class BesoinModel {
     // ======================
     // Ajouter un besoin
     // ======================
-    public function addBesoin($ville_id, $article_id, $quantite, $date_saisie) {
-        $sql = "INSERT INTO besoin (ville_id, article_id, quantite, date_saisie)
-                VALUES (:ville_id, :article_id, :quantite, :date_saisie)";
+  public function addBesoin($ville_id, $article_id, $quantite, $date_saisie) {
+
+        // 1️⃣ Récupérer le dernier ordre
+        $sqlOrdre = "SELECT COALESCE(MAX(ordre), 0) + 1 AS nextOrdre FROM besoin";
+        $stmtOrdre = $this->db->query($sqlOrdre);
+        $nextOrdre = $stmtOrdre->fetch(PDO::FETCH_ASSOC)['nextOrdre'];
+
+        // 2️⃣ Insérer avec l'ordre calculé
+        $sql = "INSERT INTO besoin (ville_id, article_id, quantite, date_saisie, ordre)
+                VALUES (:ville_id, :article_id, :quantite, :date_saisie, :ordre)";
+        
         $stmt = $this->db->prepare($sql);
+
         return $stmt->execute([
             ':ville_id' => $ville_id,
             ':article_id' => $article_id,
             ':quantite' => $quantite,
-            ':date_saisie' => $date_saisie
+            ':date_saisie' => $date_saisie,
+            ':ordre' => $nextOrdre
         ]);
     }
 
