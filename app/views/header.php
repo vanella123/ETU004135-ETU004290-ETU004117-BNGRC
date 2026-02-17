@@ -1,7 +1,7 @@
 <header class="main-navbar">
     <div class="nav-container">
         <div class="logo">
-            💙 Gestion Dons
+            BNGRC
         </div>
 
     <nav class="nav-links" aria-label="Navigation principale">
